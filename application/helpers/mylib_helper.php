@@ -84,7 +84,7 @@
 		if (!empty($level_User)) {
 			$check = $ci->db->get_where('tbl_user_rule', array('id_level_user' => $level_User, 'id_menu' => $menu['id']));
 		
-			if ($check->num_rows() < 1 AND $method != 'data' AND $method != 'add' AND $method != 'edit' AND $method != 'delete' AND $method != 'kwitansi' AND $method != 'upload_foto_siswa' AND $method != 'siswa_aktif' AND $method != 'loadDataSiswa' AND $method != 'export_excel' AND $method != 'upload_foto_siswa') {
+			if ($check->num_rows() < 1 AND $method != 'data' AND $method != 'add' AND $method != 'edit' AND $method != 'delete' AND $method != 'kwitansi' AND $method != 'upload_foto_siswa' AND $method != 'siswa_aktif' AND $method != 'loadDataSiswa' AND $method != 'export_excel' AND $method != 'combobox_kelas' AND $method != 'upload_foto_siswa') {
 				echo "Anda Tidak Boleh Akses Module Ini";
 				die;
 			}
@@ -105,23 +105,30 @@
 	}
 
 	function Terbilang($x) {
+        // Terbilang hanya untuk bilangan bulat; pastikan tidak ada float agar tidak memicu deprecated/warning PHP 8+.
+        if ($x === null || $x === '') {
+            $x = 0;
+        }
+        $x = (int) round((float) $x);
+
         $abil = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
-        if ($x < 12)
+        if ($x < 12) {
             return " " . $abil[$x];
-        elseif ($x < 20)
+        } elseif ($x < 20) {
             return Terbilang($x - 10) . "belas";
-        elseif ($x < 100)
-            return Terbilang($x / 10) . " puluh" . Terbilang($x % 10);
-        elseif ($x < 200)
+        } elseif ($x < 100) {
+            return Terbilang(intdiv($x, 10)) . " puluh" . Terbilang($x % 10);
+        } elseif ($x < 200) {
             return " seratus" . Terbilang($x - 100);
-        elseif ($x < 1000)
-            return Terbilang($x / 100) . " ratus" . Terbilang($x % 100);
-        elseif ($x < 2000)
+        } elseif ($x < 1000) {
+            return Terbilang(intdiv($x, 100)) . " ratus" . Terbilang($x % 100);
+        } elseif ($x < 2000) {
             return " seribu" . Terbilang($x - 1000);
-        elseif ($x < 1000000)
-            return Terbilang($x / 1000) . " ribu" . Terbilang($x % 1000);
-        elseif ($x < 1000000000)
-            return Terbilang($x / 1000000) . " juta" . Terbilang($x % 1000000);
+        } elseif ($x < 1000000) {
+            return Terbilang(intdiv($x, 1000)) . " ribu" . Terbilang($x % 1000);
+        } elseif ($x < 1000000000) {
+            return Terbilang(intdiv($x, 1000000)) . " juta" . Terbilang($x % 1000000);
+        }
     }
 
 ?>

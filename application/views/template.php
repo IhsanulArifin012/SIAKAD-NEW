@@ -322,6 +322,9 @@ if ($id_level_user > 0)
 	$main_menu = $this->db->query($sql_menu)->result();
 }
 
+// Hide "Peserta Didik" untuk role Guru.
+$hide_peserta_didik = ($id_level_user === 3);
+
 // Hide "Laporan Nilai" untuk role Guru yang bukan wali kelas aktif (agar tidak memunculkan error).
 $allow_laporan_nilai = true;
 if ($id_level_user === 3)
@@ -343,6 +346,11 @@ if ($id_level_user === 3)
 }
 
 foreach ($main_menu as $main){
+
+if ($hide_peserta_didik && $main->link === 'siswa/siswa_aktif')
+{
+	continue;
+}
 
 if ($main->link === 'laporan_nilai' && ! $allow_laporan_nilai)
 {
@@ -371,15 +379,19 @@ echo "<a href='#'>
 </span></a>";
 
 echo "<ul class='treeview-menu'>";
-foreach($submenu->result() as $sub){
-$subLink = $sub->link;
-if ($subLink === 'laporan_nilai' && ! $allow_laporan_nilai)
-{
-	continue;
-}
-$sub_active=($current_controller==$sub->link || $current_route==$sub->link)?'active':'';
-echo "<li class='$sub_active'>".anchor($sub->link,"<i class='".$sub->icon."'></i> ".$sub->nama_menu)."</li>";
-}
+	foreach($submenu->result() as $sub){
+	$subLink = $sub->link;
+	if ($hide_peserta_didik && $subLink === 'siswa/siswa_aktif')
+	{
+		continue;
+	}
+	if ($subLink === 'laporan_nilai' && ! $allow_laporan_nilai)
+	{
+		continue;
+	}
+	$sub_active=($current_controller==$sub->link || $current_route==$sub->link)?'active':'';
+	echo "<li class='$sub_active'>".anchor($sub->link,"<i class='".$sub->icon."'></i> ".$sub->nama_menu)."</li>";
+	}
 echo "</ul></li>";
 
 }else{

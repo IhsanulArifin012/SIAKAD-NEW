@@ -107,7 +107,7 @@
 	            $pdf->Cell(12,5,  $nilai,1,0,'L');
 	            $pdf->Cell(30,5,  Terbilang($nilai),1,0,'L');
 	            $pdf->Cell(23,5,  $this->ketercapaian_kopetensi($nilai),1,0,'L');
-	            $pdf->Cell(20,5,  ceil($this->rata_rata_nilai($m->id_jadwal)),1,0,'L');
+	            $pdf->Cell(20,5,  ceil((float) $this->rata_rata_nilai($m->id_jadwal)),1,0,'L');
 	            $pdf->Cell(37,5,'Deskripsi Kemampuan',1,1,'L');
 	            $no++;
 	    }
@@ -137,9 +137,13 @@
 	    }
     
 	    function rata_rata_nilai($id_jadwal){
-	        $sql   =  "SELECT sum(nilai)/count(nim) as nilai_rata_rata FROM tbl_nilai WHERE id_jadwal=$id_jadwal";
-	        $nilai = $this->db->query($sql)->row_array();
-	        return $nilai['nilai_rata_rata'];
+	        $id_jadwal = (int) $id_jadwal;
+
+	        // AVG() akan menghasilkan NULL jika tidak ada baris; cegah nilai NULL agar tidak memicu warning/deprecated di PHP 8+.
+	        $sql   = "SELECT IFNULL(AVG(nilai), 0) AS nilai_rata_rata FROM tbl_nilai WHERE id_jadwal=?";
+	        $nilai = $this->db->query($sql, array($id_jadwal))->row_array();
+
+	        return isset($nilai['nilai_rata_rata']) ? (float) $nilai['nilai_rata_rata'] : 0.0;
 	    }
 	    
 	    
