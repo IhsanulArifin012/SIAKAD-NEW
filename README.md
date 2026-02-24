@@ -1,51 +1,39 @@
 # Aplikasi Akademik Sekolah Berbasis Web
 
-To access admin page. Example http://localhost/pis_akademik
+Contoh akses aplikasi (sesuaikan port/local server kamu):
+
+- Login: `http://localhost:2027/auth`
+- Dashboard: `http://localhost:2027/tampilan_utama`
 
 ## Tampilan Aplikasi
+
 ![ss](assets/ss1.png)
 ![ss](assets/ss2.png)
 ![ss](assets/ss3.png)
 ![ss](assets/ss4.png)
 
-Feature
-----------
-- 4 Login Level (dynamic || can be added by yourself)
-- Login With Session
-- CRUD Siswa(Students)
-- Import Data Siswa(Students) via Csv
-- CRUD Guru
-- CRUD Mapel
-- CRUD Ruangan Kelas
-- CRUD Tingkatan Kelas
-- CRUD Jurusan
-- CRUD Tahun Akademik
-- CRUD Kelas
-- CRUD Kurikulum
-- View Detail Kurikulum
-- Edit Walikelas
-- CRUD Menu
-- CRUD User(Super Admin/Admin/Keuangan)
-- Manage Rule User
-- Generate Jadwal Pelajaran(Not Genetic Algorithm)
-- Print Jadwal Pelajaran
-- Export Data Siswa
-- Input Nilai Siswa
-- Export Data Nilai (e-Raport)
+## Fitur
 
-Requitment
-----------
-- PHP 5
+- Multi role/level user (menu dinamis per role)
+- Login berbasis session + flash message (auto hilang sekitar 10 detik)
+- CRUD Master: Siswa, Guru, Mapel, Ruangan, Tingkatan Kelas, Jurusan, Kelas, Kurikulum, Tahun Akademik
+- Walikelas: menu/fitur khusus walikelas (hanya tampil jika user terdaftar sebagai walikelas pada tahun akademik aktif)
+- Jadwal Pelajaran: generate & cetak PDF jadwal
+- Nilai: input nilai siswa & laporan nilai (role Guru/Walikelas sesuai hak akses)
+- Export Data Siswa ke Excel (`.xlsx`)
+- Import Data Siswa via Excel (`.xlsx/.xls`) lewat modal + download template contoh format
 
-Login
-----------
-|    Level     | Username  | Password |
-|:------------:|:---------:|---------:|
-| Admin        |  zuhuri   | 123456   |
-| Wali Kelas   |  adam     | 123456   |
-| Guru         |  dita     | 123456   |
-| Keuangan     |  putri    | 123456   |
+## Requirement
 
-Support
-----------
-subscribe : https://www.youtube.com/channel/UCzusH2ZfKMQ-r9yc-g7oVtQ
+- PHP 8.1+ (direkomendasikan PHP 8.4)
+- MySQL/MariaDB
+- Web server (Apache/Nginx) + mod_rewrite (jika memakai Apache)
+
+## Login
+
+|     Level     | Username | Password |
+| :-----------: | :------: | -------: |
+| Administrator |  zuhri   |   123456 |
+|  Wali Kelas   |   adam   |   123456 |
+|     Guru      |   dita   |   123456 |
+|   Keuangan    |  putri   |   123456 |
