@@ -2,17 +2,15 @@
     <div class="row">
         <div class="col-xs-12">
 
-          <div class="box box-primary">
-            <div class="box-header  with-border">
-                <?php
-                    $nim   = $this->uri->segment(3);
-                    $query = "SELECT ts.nama
-                            FROM tbl_nilai AS tn, tbl_siswa AS ts
-                            WHERE tn.nim = ts.nim AND tn.nim = '$nim'";
-                    $nama = $this->db->query($query)->row_array();
-                ?>
-              <h3 class="box-title">Data Nilai Siswa <?php echo $nama['nama']; ?></h3>
-            </div>
+	          <div class="box box-primary">
+	            <div class="box-header  with-border">
+	                <?php
+	                    $nim   = $this->uri->segment(3);
+	                    $namaRow = $this->db->select('nama')->get_where('tbl_siswa', ['nim' => $nim])->row_array();
+	                    $namaSiswa = isset($namaRow['nama']) ? $namaRow['nama'] : $nim;
+	                ?>
+	              <h3 class="box-title">Data Nilai Siswa <?php echo htmlspecialchars($namaSiswa, ENT_QUOTES, 'UTF-8'); ?></h3>
+	            </div>
             <!-- /.box-header -->
             <div class="box-body">
 
@@ -27,16 +25,19 @@
                         <th class="text-center">Keterangan</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php
+	                <tbody>
+	                    <?php
 
-                        $no = 1;
-                        foreach ($nilai_siswa->result() as $row) {
-                            
-                            // nilai
-                            if($row->nilai > 90){
-                                $Keterangan = '<p class="text-green">Sangat baik</p>';
-                            }elseif($row->nilai > 80 and $row->nilai <= 90){
+	                        $no = 1;
+	                        if ( ! isset($nilai_siswa) || $nilai_siswa->num_rows() === 0) {
+	                        	echo "<tr><td colspan='4' class='text-center'>Belum ada data nilai.</td></tr>";
+	                        }
+	                        foreach ($nilai_siswa->result() as $row) {
+	                            
+	                            // nilai
+	                            if($row->nilai > 90){
+	                                $Keterangan = '<p class="text-green">Sangat baik</p>';
+	                            }elseif($row->nilai > 80 and $row->nilai <= 90){
                                 $Keterangan = '<p class="text-green">Baik</p>';
                             }elseif($row->nilai > 70 and $row->nilai <= 80){
                                 $Keterangan = '<p class="text-yellow">Cukup</p>';
