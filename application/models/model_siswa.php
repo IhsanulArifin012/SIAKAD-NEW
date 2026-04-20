@@ -22,14 +22,12 @@
 
 			// ketika pengguna menginsert data siswa, maka data nim, kd_kelas dan tahun_akademik_aktif akan otomatis terinsert dengan sendirinya ke tbl_riwayat_kelas
 			$tahun_akademik = $this->db->get_where('tbl_tahun_akademik', array('is_aktif' => 'Y'))->row_array();
-			if (!empty($tahun_akademik)) {
-				$riwayat = array(
-								'nim' 				=> $this->input->post('nim', TRUE),
-								'kd_kelas'			=> $this->input->post('kelas', TRUE),
-								'id_tahun_akademik'	=> $tahun_akademik['id_tahun_akademik']
-							); 
-				$this->db->insert('tbl_riwayat_kelas', $riwayat);
-			}
+			$riwayat = array(
+							'nim' 				=> $this->input->post('nim', TRUE),
+							'kd_kelas'			=> $this->input->post('kelas', TRUE),
+							'id_tahun_akademik'	=> $tahun_akademik['id_tahun_akademik']
+						); 
+			$this->db->insert('tbl_riwayat_kelas', $riwayat);
 		}
 
 		function update($foto)
