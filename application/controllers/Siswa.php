@@ -32,13 +32,12 @@
 		        array('db' => 'nama', 'dt' => 'nama'),
 		        array('db' => 'tempat_lahir', 'dt' => 'tempat_lahir'),
 		        array('db' => 'tanggal_lahir', 'dt' => 'tanggal_lahir'),
-		        //untuk menampilkan aksi(edit/delete dengan parameter nim siswa)
 		        array(
 		              'db' => 'nim',
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
 		               		return anchor('siswa/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
-		               		'.anchor('siswa/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+		               		'.anchor('siswa/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger delete-btn" data-nim="'.$d.'" data-placement="top" title="Delete"');
 		            }
 		        )
 		    );
@@ -65,10 +64,39 @@
 
 		function add()
 		{
-			if (isset($_POST['submit'])) {
+			if ($this->input->method() === 'post') {
+				$nim = $this->input->post('nim');
+				$nama = $this->input->post('nama');
+				$tempat_lahir = $this->input->post('tempat_lahir');
+				$tanggal_lahir = $this->input->post('tanggal_lahir');
+				$gender = $this->input->post('gender');
+				$agama = $this->input->post('agama');
+				$kelas = $this->input->post('kelas');
+
+				if (empty($nim) || empty($nama) || empty($tempat_lahir) || empty($tanggal_lahir) || empty($gender) || empty($agama) || empty($kelas)) {
+					$this->session->set_flashdata('error', 'Semua field harus diisi!');
+					redirect('siswa/add');
+					return;
+				}
+
+				$cek = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row();
+				if ($cek) {
+					$this->session->set_flashdata('error', 'NIM sudah ada!');
+					redirect('siswa/add');
+					return;
+				}
+
+				$this->db->trans_start();
 				$uploadFoto = $this->upload_foto_siswa();
 				$this->model_siswa->save($uploadFoto);
-				redirect('siswa');
+				$this->db->trans_complete();
+				if ($this->db->trans_status() === FALSE) {
+					$this->session->set_flashdata('error', 'Gagal menyimpan data siswa!');
+					redirect('siswa/add');
+				} else {
+					$this->session->set_flashdata('success', 'Data siswa berhasil ditambahkan!');
+					redirect('siswa');
+				}
 			} else {
 				$this->template->load('template', 'siswa/add');
 			}
@@ -77,9 +105,17 @@
 		function edit()
 		{
 			if (isset($_POST['submit'])) {
+				$this->db->trans_start();
 				$uploadFoto = $this->upload_foto_siswa();
 				$this->model_siswa->update($uploadFoto);
-				redirect('siswa');
+				$this->db->trans_complete();
+				if ($this->db->trans_status() === FALSE) {
+					$this->session->set_flashdata('error', 'Gagal mengupdate data siswa!');
+					redirect('siswa/edit/'.$this->input->post('nim'));
+				} else {
+					$this->session->set_flashdata('success', 'Data siswa berhasil diupdate!');
+					redirect('siswa');
+				}
 			} else {
 				$nim           = $this->uri->segment(3);
 				$data['siswa'] = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row_array();
@@ -93,6 +129,7 @@
 			if (!empty($nim)) {
 				$this->db->where('nim', $nim);
 				$this->db->delete('tbl_siswa');
+				$this->session->set_flashdata('success', 'Data siswa berhasil dihapus!');
 			} 
 			redirect('siswa');
 		}
@@ -105,10 +142,12 @@
             $config['max_size']             = 1024;
             $this->load->library('upload', $config);
 
-            //proses upload
-            $this->upload->do_upload('userfile');
-            $upload = $this->upload->data();
-            return $upload['file_name'];
+            if ($this->upload->do_upload('userfile')) {
+            	$upload = $this->upload->data();
+            	return $upload['file_name'];
+            } else {
+            	return '';
+            }
 		}
 
 		// siswa_aktif() -> untuk menampilkan view peserta didik ->terletak di controller Siswa

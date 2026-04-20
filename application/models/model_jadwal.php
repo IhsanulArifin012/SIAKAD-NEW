@@ -20,13 +20,20 @@
 	 		 return $jam_pelajaran;
 	 	}
 
-	 	function generateJadwal()
-	 	{
-	 		$idkurikulum	 = $this->input->post('kurikulum');
+function generateJadwal($kdJurusan = null, $kdTingkatan = null)
+	  	{
+	  		$idkurikulum	 = $this->input->post('kurikulum');
 			$semester		 = $this->input->post('semester');
+			$this->db->where('id_kurikulum', $idkurikulum);
+			if ( ! empty($kdJurusan)) {
+				$this->db->where('kd_jurusan', $kdJurusan);
+			}
+			if ( ! empty($kdTingkatan)) {
+				$this->db->where('kd_tingkatan', $kdTingkatan);
+			}
 
 			// Mengambil detail data dari kurikulum yang dipilih (tbl_kurikulum_detail)
-			$kurikulumDetail = $this->db->get_where('tbl_kurikulum_detail', array('id_kurikulum' => $idkurikulum));
+			$kurikulumDetail = $this->db->get('tbl_kurikulum_detail');
 
 			// Ambil tahun akademik yang aktif
 			$tahunakademik 	 = $this->db->get_where('tbl_tahun_akademik', array('is_aktif' => 'Y'))->row_array();

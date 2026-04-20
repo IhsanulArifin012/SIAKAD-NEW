@@ -45,10 +45,19 @@
                     <?php
                         foreach ($siswa as $row) {
                             echo "<tr>
-                                    <td class='text-center'>$row->nim</td>
-                                    <td>$row->nama</td>
-                                    <td width='100'><input type='int' onKeyUp='updateNilai(\"$row->nim\")' id='nilai".$row->nim."' value='".check_nilai($row->nim, $this->uri->segment(3))."' class='form-control'></input></td>
-                                 </tr>";
+    <td class='text-center'>$row->nim</td>
+    <td>$row->nama</td>
+    <td width='200'>
+        <input type='number' id='nilai".$row->nim."' 
+        value='".check_nilai($row->nim, $this->uri->segment(3))."' 
+        class='form-control'>
+
+        <button class='btn btn-success btn-xs btn-simpan-nilai mt-1' 
+            data-nim='".$row->nim."'>
+            Simpan
+        </button>
+    </td>
+</tr>";
                         }
                     ?>
                 </thead>
@@ -81,4 +90,40 @@
             }
         })
     }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).on('click', '.btn-simpan-nilai', function(){
+
+    let nim = $(this).data('nim');
+    let nilai = $("#nilai"+nim).val();
+
+    Swal.fire({
+        title: 'Simpan nilai?',
+        text: 'Nilai akan disimpan',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, simpan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            $.ajax({
+                type: 'GET',
+                url: '<?php echo base_url(); ?>nilai/update_nilai',
+                data: {
+                    nim: nim,
+                    id_jadwal: <?php echo $this->uri->segment(3); ?>,
+                    nilai: nilai
+                },
+                success: function(){
+                    Swal.fire('Berhasil', 'Nilai disimpan', 'success');
+                }
+            });
+
+        }
+    });
+
+});
 </script>

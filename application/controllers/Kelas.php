@@ -37,7 +37,11 @@
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
 		               		return anchor('kelas/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
-		               		'.anchor('kelas/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+		               		'.anchor(
+							'kelas/delete/'.$d,
+							'<i class="fa fa-times fa fa-white"></i>',
+							'class="btn btn-xs btn-danger btn-hapus" data-placement="top" title="Delete"'
+						);
 		            }
 		        )
 		    );
@@ -64,7 +68,7 @@
 
 		function add()
 		{
-			if (isset($_POST['submit'])) {
+			 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$this->model_kelas->save();
 				redirect('kelas');
 			} else {
@@ -74,7 +78,7 @@
 
 		function edit()
 		{
-			if (isset($_POST['submit'])) {
+			 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$this->model_kelas->update();
 				redirect('kelas');
 			} else {

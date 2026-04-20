@@ -37,7 +37,7 @@
 		              'formatter' => function($d) {
 		               		return anchor('kurikulum/detail/'.$d, '<i class="fa fa-eye"></i>', 'class="btn btn-xs bg-orange" data-placement="top" title="View Detail"').'
                       '.anchor('kurikulum/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').'
-		               		'.anchor('kurikulum/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+		               		'.anchor('kurikulum/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger btn-hapus" data-placement="top" title="Delete"');
 		            }
 		        )
 		    );
@@ -64,7 +64,7 @@
 
 		function add()
 		{
-			if (isset($_POST['submit'])) {
+			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$this->model_kurikulum->save();
 				redirect('kurikulum');
 			} else {
@@ -74,7 +74,7 @@
 
 		function edit()
 		{
-			if (isset($_POST['submit'])) {
+			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$this->model_kurikulum->update();
 				redirect('kurikulum');
 			} else {
@@ -126,8 +126,7 @@
 			    		<td>$no</td>
 			    		<td>$row->kd_mapel</td>
 			    		<td>$row->nama_mapel</td>
-			    		<td>".anchor('kurikulum/delete_detail/'.$row->id_kurikulum_detail.'/'.$row->id_kurikulum, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"')."</td>
-			    		
+			    		<td>".anchor('kurikulum/delete_detail/'.$row->id_kurikulum_detail.'/'.$row->id_kurikulum, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger btn-hapus"')."</td>
 			    	 </tr>";
 			    $no++;
 			}    
@@ -137,7 +136,7 @@
 
 		function add_detail()
 		{
-			if (isset($_POST['submit'])) {
+			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$this->model_kurikulum->save_detail();
 				redirect('kurikulum/detail/'.$this->input->post('kurikulum'));
 			} else {

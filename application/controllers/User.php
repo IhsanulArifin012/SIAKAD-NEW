@@ -35,7 +35,7 @@
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
 		               		return anchor('user/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
-		               		'.anchor('user/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+		               		'.anchor('user/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger btn-hapus" data-placement="top" title="Delete"');
 		            }
 		        )
 		    );
@@ -65,6 +65,7 @@
 			if (isset($_POST['submit'])) {
 				$uploadFoto = $this->upload_foto_user();
 				$this->model_user->save($uploadFoto);
+				$this->session->set_flashdata('success', 'Data user berhasil disimpan.');
 				redirect('user');
 			} else {
 				$this->template->load('template', 'user/add');
@@ -76,6 +77,7 @@
 			if (isset($_POST['submit'])) {
 				$uploadFoto = $this->upload_foto_user();
 				$this->model_user->update($uploadFoto);
+				$this->session->set_flashdata('success', 'Data user berhasil diubah.');
 				redirect('user');
 			} else {
 				$id_user 		= $this->uri->segment(3);
@@ -88,8 +90,11 @@
 		{
 			$kode_user = $this->uri->segment(3);
 			if (!empty($kode_user)) {
-				$this->db->where('kd_user', $kode_user);
+				$this->db->where('id_user', $kode_user);
 				$this->db->delete('tbl_user');
+				$this->session->set_flashdata('success', 'Data user berhasil dihapus.');
+			} else {
+				$this->session->set_flashdata('error', 'Data user tidak ditemukan.');
 			}
 			redirect('user');
 		}
@@ -103,9 +108,12 @@
             $this->load->library('upload', $config);
 
             //proses upload
-            $this->upload->do_upload('userfile');
-            $upload = $this->upload->data();
-            return $upload['file_name'];
+            if ($this->upload->do_upload('userfile')) {
+                $upload = $this->upload->data();
+                return $upload['file_name'];
+            }
+
+            return '';
 		}
 
 		function rule()

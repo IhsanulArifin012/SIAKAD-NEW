@@ -235,7 +235,8 @@ switch($level){
 
 <li class="dropdown user user-menu">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-<img src="<?php echo base_url(); ?>assets/dist/img/pasfotogur.png" class="user-image">
+<!-- <img src="<?php echo base_url(); ?>assets/dist/img/pasfotogur.png" class="user-image"> -->
+
 <span class="hidden-xs" style="color:#e5e7eb; font-weight:500;">
 <?php echo $this->session->userdata('nama_lengkap'); ?>
 </span>
@@ -246,9 +247,10 @@ switch($level){
 
 <li class="user-header" style="background:linear-gradient(135deg,#0b2f4a,#124a70); padding:25px 15px; text-align:center; color:#fff;">
 
-    <img src="<?php echo base_url(); ?>assets/dist/img/user2-160x160.jpg" 
-         class="img-circle" 
-         style="width:90px; height:90px; border:4px solid #fff; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+   <img src="<?php echo base_url(); ?>assets/dist/img/fotoprofil.jpg" 
+     class="img-circle" 
+     style="width:90px; height:90px; border:4px solid #fff; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+
 
     <p style="margin-top:12px; font-weight:600; color:#fff; font-size:16px;">
         <?php echo $this->session->userdata('nama_lengkap'); ?>
@@ -286,7 +288,7 @@ switch($level){
 
 <div class="user-panel">
 <div class="image">
-<img src="<?php echo base_url(); ?>assets/dist/img/pasfotogur.png">
+<img src="<?php echo base_url(); ?>assets/dist/img/fotoprofil.jpg">
 </div>
 
 <div class="info">
@@ -454,4 +456,34 @@ echo "<li class='$is_active'>".anchor($main->link,"<i class='".$main->icon."'></
 </script>
 
 </body>
-</html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+var flashSuccess = <?php echo json_encode($success ?: ''); ?>;
+var flashError = <?php echo json_encode($error ?: ''); ?>;
+if (flashSuccess) {
+    Swal.fire('Berhasil', flashSuccess, 'success');
+}
+if (flashError) {
+    Swal.fire('Gagal', flashError, 'error');
+}
+$(document).on('click', '.btn-hapus', function(e) {
+    e.preventDefault();
+
+    let url = $(this).attr('href');
+
+    Swal.fire({
+        title: 'Hapus data?',
+        text: 'Data tidak bisa dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+});
+
+</script>
+</html> 

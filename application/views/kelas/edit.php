@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open('kelas/edit', 'role="form" class="form-horizontal"');
+                echo form_open('kelas/edit', 'role="form" class="form-horizontal" id="form-kelas-edit"');
             ?>
 
                 <div class="box-body">
@@ -54,7 +54,7 @@
                       <label class="col-sm-2 control-label"></label>
 
                       <div class="col-sm-1">
-                        <button type="submit" name="submit" class="btn btn-primary btn-flat">Simpan</button>
+                       <button type="button" id="btn-update" class="btn btn-primary btn-flat">Simpan</button>
                       </div>
 
                       <div class="col-sm-1">
@@ -73,4 +73,24 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).on('click', '#btn-update', function(){
+
+    Swal.fire({
+        title: 'Simpan perubahan?',
+        text: 'Pastikan data sudah benar',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, simpan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-kelas-edit').submit();
+        }
+    });
+
+});
+</script>
 </section>

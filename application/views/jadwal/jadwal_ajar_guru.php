@@ -36,20 +36,28 @@
                         <th>HARI</th>
                         <th>JAM</th>
                         <th>RUANG</th>
+                        <th>AKSI</th>
                     </tr>
                 </thead>
 
                 <?php
                     $no = 1;
                     foreach ($jadwal->result() as $row) {
-                       echo "<tr>
-                                <td>$no</td>
-                                <td>Jurusan $row->nama_jurusan $row->nama_tingkatan</td>
-                                <td>$row->nama_mapel</td>
-                                <td>$row->hari</td>
-                                <td>$row->jam</td>
-                                <td>$row->nama_ruangan</td>
-                            </tr>";
+                      echo "<tr>
+    <td>$no</td>
+    <td>Jurusan $row->nama_jurusan $row->nama_tingkatan</td>
+    <td>$row->nama_mapel</td>
+    <td>$row->hari</td>
+    <td>$row->jam</td>
+    <td>$row->nama_ruangan</td>
+    <td>
+        ".anchor(
+            'jadwal/delete/'.$row->id_jadwal,
+            '<i class=\"fa fa-trash\"></i>',
+            'class=\"btn btn-danger btn-xs btn-hapus\"'
+        )."
+    </td>
+</tr>";
                         $no++;
                     }
                 ?>

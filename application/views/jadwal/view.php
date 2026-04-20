@@ -43,6 +43,7 @@
                             <i class="fa fa-cogs" aria-hidden="true"></i> Generate Jadwal
                             </button>
                             <button type="submit" name="export_jadwal" class="btn btn-danger btn-sm"><i class="fa fa-print" aria-hidden="true"></i> Cetak PDF</button>
+                            <button type="button" id="btn-delete-all" class="btn btn-warning btn-sm" onclick="deleteAllJadwal()"><i class="fa fa-trash" aria-hidden="true"></i> Hapus Semua</button>
                         </td>
                     </tr>
                 </table>
@@ -99,6 +100,52 @@
 <script type="text/javascript">
     $(document).ready(function(){
         loadKelas();
+
+        $('#myModal').on('show.bs.modal', function () {
+            $('#generate_kd_jurusan').val($('#filter_jurusan').val());
+            $('#generate_kd_tingkatan').val($('#filter_tingkatan').val());
+            $('#generate_kd_kelas').val($('#kelas').val());
+        });
+
+        $('#formGenerateJadwal').on('submit', function(e) {
+            e.preventDefault();
+
+            var jurusan = $('#filter_jurusan').val();
+            var tingkatan = $('#filter_tingkatan').val();
+            var kelas = $('#kelas').val();
+            var kurikulum = $('#formGenerateJadwal select[name="kurikulum"]').val();
+            var semester = $('#formGenerateJadwal select[name="semester"]').val();
+
+            if (!jurusan || !tingkatan) {
+                Swal.fire('Pilih filter dulu', 'Silakan pilih jurusan dan tingkatan terlebih dahulu sebelum generate jadwal.', 'warning');
+                return;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo base_url() ?>jadwal/generate_jadwal',
+                data: {
+                    submit: 1,
+                    kurikulum: kurikulum,
+                    semester: semester,
+                    kd_jurusan: jurusan,
+                    kd_tingkatan: tingkatan
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire('Berhasil', response.message, 'success');
+                        $('#myModal').modal('hide');
+                        loadPelajaran();
+                    } else {
+                        Swal.fire('Gagal', response.message || 'Terjadi kesalahan saat generate jadwal.', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Gagal', 'Terjadi kesalahan saat generate jadwal.', 'error');
+                }
+            });
+        });
     });
 </script>
 
@@ -187,6 +234,47 @@
         })
     }
 
+    function deleteAllJadwal()
+    {
+        var jurusan         = $("#filter_jurusan").val();
+        var tingkatan_kelas = $("#filter_tingkatan").val();
+        var kelas           = $("#kelas").val();
+
+        if (!kelas) {
+            Swal.fire('Pilih kelas terlebih dahulu', 'Silakan pilih kelas dahulu sebelum menghapus semua jadwal.', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Hapus semua data?',
+            text: 'Semua data daftar pelajaran untuk kelas ini akan dihapus dan tidak dapat dikembalikan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus semua',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type    : 'GET',
+                    url     : '<?php echo base_url() ?>jadwal/delete_all_dataJadwal',
+                    data    : 'kd_jurusan='+jurusan+'&kd_tingkatan='+tingkatan_kelas+'&kelas='+kelas,
+                    dataType: 'json',
+                    success : function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire('Terhapus!', response.message, 'success');
+                            loadPelajaran();
+                        } else {
+                            Swal.fire('Gagal', response.message || 'Terjadi kesalahan saat menghapus semua data.', 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Gagal', 'Terjadi kesalahan saat menghapus semua data.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
 </script>
 
 <!-- Modal -->
@@ -194,7 +282,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <?php
-                echo form_open('jadwal/generate_jadwal', 'role="form" class="form-horizontal"');
+                echo form_open('jadwal/generate_jadwal', 'role="form" class="form-horizontal" id="formGenerateJadwal"');
             ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -220,6 +308,9 @@
                         </td>
                     </tr>
                 </table>
+                <input type="hidden" id="generate_kd_jurusan" name="kd_jurusan" value="" />
+                <input type="hidden" id="generate_kd_tingkatan" name="kd_tingkatan" value="" />
+                <input type="hidden" id="generate_kd_kelas" name="kelas" value="" />
 
             </div>
             <div class="modal-footer">
@@ -230,3 +321,41 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).on('click', '.btn-hapus', function(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    let url = $(this).attr('href');
+
+    Swal.fire({
+        title: 'Hapus data?',
+        text: 'Data tidak bisa dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire('Terhapus!', response.message, 'success');
+                        loadPelajaran();
+                    } else {
+                        Swal.fire('Gagal', 'Terjadi kesalahan saat menghapus data.', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Gagal', 'Terjadi kesalahan saat menghapus data.', 'error');
+                }
+            });
+        }
+    });
+});
+</script>

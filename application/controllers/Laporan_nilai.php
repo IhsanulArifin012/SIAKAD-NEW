@@ -45,9 +45,9 @@
 		function nilai_semester(){
        		// blok query info siswa
 	       $nim = $this->uri->segment(3);
-	       $sqlSiswa = "SELECT ts.nama as nama_siswa, ts.nim, tj.nama_jurusan, tk.nama_kelas, tk.kd_tingkatan
+	       $sqlSiswa = "SELECT ts.nama as nama_siswa, ts.nim, tj.nama_jurusan, tk.nama_kelas, tk.kd_tingkatan, tk.kd_kelas
 	                    FROM tbl_riwayat_kelas as trk, tbl_siswa as ts, tbl_kelas as tk, tbl_jurusan as tj
-	                    WHERE ts.nim=trk.nim and tk.kd_kelas = ts.kd_kelas and tk.kd_jurusan = tj.kd_jurusan 
+	                    WHERE ts.nim=trk.nim and tk.kd_kelas = trk.kd_kelas and tk.kd_jurusan = tj.kd_jurusan 
 	                    and trk.nim='$nim' and trk.id_tahun_akademik=".get_tahun_akademik('id_tahun_akademik');
 	       $siswa = $this->db->query($sqlSiswa)->row_array();
 	       
@@ -57,7 +57,7 @@
 	        $pdf->SetFont('Arial','B',12);
 	        $pdf->Cell(190,5,'NAMA SEKOLAH',1,1,'C');
 	        $pdf->SetFont('Arial','B',14);
-	        $pdf->Cell(190,7,'PASANTREN IMAM SYAFiI',1,1,'C');
+	        $pdf->Cell(190,7,'SDN RANTAU KANAN 2',1,1,'C');
 	        $pdf->SetFont('Arial','',8);
 	        $pdf->Cell(190,5,'Jl Pesantren Km 2, Sibreh, Aceh Besar, Telpon : 0651-23462',1,1,'C');
 	         
@@ -96,19 +96,19 @@
 	        $pdf->SetFont('Arial','',9);
 	        $sqlMapel = "SELECT tj.id_jadwal,tm.nama_mapel 
 	                    FROM tbl_jadwal as tj,tbl_mapel as tm
-	                    WHERE tj.kd_mapel=tm.kd_mapel and tj.kd_tingkatan=7";
+	                    WHERE tj.kd_mapel=tm.kd_mapel and tj.kd_tingkatan=".$siswa['kd_tingkatan']." and tj.kd_kelas='".$siswa['kd_kelas']."'";
 	        $mapel = $this->db->query($sqlMapel)->result();
 	        $no=1;
 	        foreach ($mapel as $m){
 	            $pdf->Cell(8,5,$no,1,0,'L');
-	            $pdf->Cell(50,5,$m->nama_mapel,1,0,'L');
+	            $pdf->Cell(50,5, substr($m->nama_mapel, 0, 35),1,0,'L');
 	            $pdf->Cell(10,5,75,1,0,'L');
 	            $nilai = check_nilai($siswa['nim'], $m->id_jadwal);
 	            $pdf->Cell(12,5,  $nilai,1,0,'L');
 	            $pdf->Cell(30,5,  Terbilang($nilai),1,0,'L');
 	            $pdf->Cell(23,5,  $this->ketercapaian_kopetensi($nilai),1,0,'L');
 	            $pdf->Cell(20,5,  ceil((float) $this->rata_rata_nilai($m->id_jadwal)),1,0,'L');
-	            $pdf->Cell(37,5,'Deskripsi Kemampuan',1,1,'L');
+	            $pdf->Cell(37,5, substr($this->deskripsi_kemampuan($nilai), 0, 25),1,1,'L');
 	            $no++;
 	    }
 	    // END BLOCK NILAI SISWA --------------------------------
@@ -156,6 +156,18 @@
 	            return 'Cukup';
 	        }else{
 	            return "Kurang";
+	        }
+	    }
+
+	    function deskripsi_kemampuan($nilai){
+	        if($nilai >= 90){
+	            return 'Sangat baik, aktif belajar';
+	        }elseif($nilai >= 80){
+	            return 'Baik, perlu dorongan';
+	        }elseif($nilai >= 75){
+	            return 'Cukup, butuh bimbingan';
+	        }else{
+	            return 'Kurang, perlu perhatian';
 	        }
 	    }
 

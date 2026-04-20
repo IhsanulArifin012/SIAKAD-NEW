@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open_multipart('siswa/add', 'role="form" class="form-horizontal"');
+                echo form_open_multipart('siswa/add', 'role="form" class="form-horizontal" onsubmit="return confirmAdd(event)"');
             ?>
 
                 <div class="box-body">
@@ -98,6 +98,27 @@
                 <!-- /.box-body -->
             </form>
           </div>
+
+<script>
+function confirmAdd(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Konfirmasi Tambah Siswa',
+        text: "Apakah Anda yakin ingin menambahkan data siswa ini?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Tambahkan!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            event.target.submit();
+        }
+    });
+    return false;
+}
+</script>
           <!-- /.box -->
         </div>
         <!-- /.col -->

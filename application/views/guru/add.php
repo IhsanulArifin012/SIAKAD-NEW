@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open('guru/add', 'role="form" class="form-horizontal"');
+               echo form_open('guru/add', 'class="form-horizontal" id="form-simpan"');
             ?>
 
                 <div class="box-body">
@@ -60,7 +60,7 @@
                       <label class="col-sm-2 control-label"></label>
 
                       <div class="col-sm-1">
-                        <button type="submit" name="submit" class="btn btn-primary btn-flat">Simpan</button>
+                       <button type="button" id="btn-simpan" class="btn btn-primary btn-flat">Simpan</button>
                       </div>
 
                       <div class="col-sm-1">
@@ -80,3 +80,29 @@
     </div>
     <!-- /.row -->
 </section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(function(){
+
+    $('#btn-simpan').click(function(){
+
+        Swal.fire({
+            title: 'Simpan data?',
+            text: 'Pastikan data sudah benar',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, simpan',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                document.getElementById('form-simpan').submit();
+
+            }
+        });
+
+    });
+
+});
+</script>

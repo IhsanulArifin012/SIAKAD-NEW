@@ -37,8 +37,12 @@
                   'db' => 'id_guru',
                   'dt' => 'aksi',
                   'formatter' => function($d) {
-                      return anchor('guru/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
-                      '.anchor('guru/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+                     return anchor('guru/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
+'.anchor(
+    'guru/delete/'.$d,
+    '<i class="fa fa-times fa fa-white"></i>',
+    'class="btn btn-xs btn-danger btn-hapus" data-placement="top" title="Delete"'
+);
                 }
             )
         );
@@ -65,8 +69,9 @@
 
     function add()
     {
-      if (isset($_POST['submit'])) {
+     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $this->model_guru->save();
+        $this->session->set_flashdata('success', 'Data guru berhasil ditambahkan.');
         redirect('guru');
       } else {
         $this->template->load('template', 'guru/add');
@@ -75,8 +80,9 @@
 
     function edit()
     {
-      if (isset($_POST['submit'])) {
+      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $this->model_guru->update();
+        $this->session->set_flashdata('success', 'Data guru berhasil diupdate.');
         redirect('guru');
       } else {
         $id_guru     = $this->uri->segment(3);
@@ -91,6 +97,7 @@
       if (!empty($id_guru)) {
         $this->db->where('id_guru', $id_guru);
         $this->db->delete('tbl_guru');
+        $this->session->set_flashdata('success', 'Data guru berhasil dihapus.');
       }
       redirect('guru');
     }

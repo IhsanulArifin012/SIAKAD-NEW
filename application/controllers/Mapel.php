@@ -29,7 +29,7 @@
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
 		               		return anchor('mapel/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
-		               		'.anchor('mapel/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+		               		'.anchor('mapel/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger btn-hapus" data-placement="top" title="Delete"');
 		            }
 		        )
 		    );
@@ -55,19 +55,42 @@
 		}
 
 		function add()
-		{
-			if (isset($_POST['submit'])) {
-				$this->model_mapel->save();
-				redirect('mapel');
-			} else {
-				$this->template->load('template', 'mapel/add');
-			}
-		}
+{
+    if ($this->input->method() === 'post') {
+
+        $kd = $this->input->post('kd_mapel');
+        $nama = $this->input->post('nama_mapel');
+
+       
+        if (empty($kd) || empty($nama)) {
+            $this->session->set_flashdata('error', 'Data tidak boleh kosong!');
+            redirect('mapel/add');
+            return;
+        }
+
+        
+        $cek = $this->db->get_where('tbl_mapel', ['kd_mapel' => $kd])->row();
+        if ($cek) {
+            $this->session->set_flashdata('error', 'Kode mapel sudah ada!');
+            redirect('mapel/add');
+            return;
+        }
+
+        // simpan data
+        $this->model_mapel->save();
+        $this->session->set_flashdata('success', 'Data mapel berhasil disimpan.');
+        redirect('mapel');
+
+    } else {
+        $this->template->load('template', 'mapel/add');
+    }
+}
 
 		function edit()
 		{
-			if (isset($_POST['submit'])) {
+			if ($this->input->method() === 'post') {
 				$this->model_mapel->update();
+				$this->session->set_flashdata('success', 'Data mapel berhasil diubah.');
 				redirect('mapel');
 			} else {
 				$kd_mapel 		= $this->uri->segment(3);
@@ -82,6 +105,9 @@
 			if (!empty($kode_mapel)) {
 				$this->db->where('kd_mapel', $kode_mapel);
 				$this->db->delete('tbl_mapel');
+				$this->session->set_flashdata('success', 'Data mapel berhasil dihapus.');
+			} else {
+				$this->session->set_flashdata('error', 'Data mapel tidak ditemukan.');
 			}
 			redirect('mapel');
 		}

@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open_multipart('siswa/edit', 'role="form" class="form-horizontal"');
+                echo form_open_multipart('siswa/edit', 'role="form" class="form-horizontal" onsubmit="return confirmEdit(event)"');
             ?>
 
                 <div class="box-body">
@@ -99,6 +99,27 @@
                 <!-- /.box-body -->
             </form>
           </div>
+
+<script>
+function confirmEdit(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Konfirmasi Edit Siswa',
+        text: "Apakah Anda yakin ingin menyimpan perubahan data siswa?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#007bff',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Simpan!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            event.target.submit();
+        }
+    });
+    return false;
+}
+</script>
           <!-- /.box -->
         </div>
         <!-- /.col -->

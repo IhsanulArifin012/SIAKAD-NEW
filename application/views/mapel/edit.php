@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open('mapel/edit', 'role="form" class="form-horizontal"');
+                echo form_open('mapel/edit', 'role="form" class="form-horizontal" id="form-edit"');
             ?>
 
                 <div class="box-body">
@@ -34,7 +34,7 @@
                       <label class="col-sm-2 control-label"></label>
 
                       <div class="col-sm-1">
-                        <button type="submit" name="submit" class="btn btn-primary btn-flat">Simpan</button>
+                        <button type="submit" class="btn btn-primary btn-flat">Simpan</button>
                       </div>
 
                       <div class="col-sm-1">
@@ -54,3 +54,30 @@
     </div>
     <!-- /.row -->
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('form-edit');
+    if (!form) return;
+    var confirmed = false;
+    form.addEventListener('submit', function(e) {
+        if (confirmed) {
+            return;
+        }
+        e.preventDefault();
+        Swal.fire({
+            title: 'Simpan perubahan?',
+            text: 'Pastikan data sudah benar.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, simpan',
+            cancelButtonText: 'Batal'
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                confirmed = true;
+                form.submit();
+            }
+        });
+    });
+});
+</script> 

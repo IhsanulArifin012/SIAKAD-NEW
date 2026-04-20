@@ -86,5 +86,31 @@
                     cell.innerHTML = i+1;
                 } );
             } ).draw();
+
+            $(document).on('click', '.btn-hapus', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                var url = $(this).attr('href');
+                if (typeof Swal === 'undefined') {
+                    if (confirm('Hapus user? Data user akan dihapus dan tidak bisa dikembalikan.')) {
+                        window.location.href = url;
+                    }
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Hapus user?',
+                    text: 'Data user akan dihapus dan tidak bisa dikembalikan.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, hapus',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
         } );
 </script>

@@ -94,7 +94,20 @@
             alert('Kelas belum dipilih.');
             return;
         }
-        window.location.href = "<?php echo base_url('siswa/aksi_naikkelas?kelas='); ?>" + encodeURIComponent(kelas);
+        Swal.fire({
+            title: 'Konfirmasi Naik Kelas Siswa',
+            text: "Apakah Anda yakin ingin menaikkan kelas siswa di kelas ini?",
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Naikkan Kelas!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "<?php echo base_url('siswa/aksi_naikkelas?kelas='); ?>" + encodeURIComponent(kelas);
+            }
+        });
     });
 </script>
 

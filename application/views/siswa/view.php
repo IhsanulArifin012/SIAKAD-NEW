@@ -40,15 +40,6 @@
     <!-- /.row -->
 </section>
 
-<!-- punya lama -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.0/jquery.dataTables.js"></script> -->
-<!-- <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.js"></script> -->
-
-<!-- baru tapi cdn -->
-<!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"> -->
-
 <script src="<?php echo base_url(); ?>assets/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
@@ -99,7 +90,28 @@
 	                    cell.innerHTML = i+1;
 	                } );
 	            } ).draw();
-	        } );
+
+            // Konfirmasi delete
+            $(document).on('click', '.delete-btn', function(e) {
+                e.preventDefault();
+                var href = $(this).attr('href');
+                var nim = $(this).data('nim');
+                Swal.fire({
+                    title: 'Konfirmasi Hapus Siswa',
+                    text: "Data siswa dengan NIM " + nim + " akan dihapus. Apakah Anda yakin?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = href;
+                    }
+                });
+            });
+        });
 	</script>
 
 	<?php $this->load->view('siswa/_import_excel_modal'); ?>

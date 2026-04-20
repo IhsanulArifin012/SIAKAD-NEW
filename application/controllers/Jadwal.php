@@ -30,9 +30,36 @@
 
 		function generate_jadwal()
 		{
-			if (isset($_POST['submit'])) {
-				$this->model_jadwal->generateJadwal();
+			if ( ! $this->input->post('submit')) {
+				redirect('jadwal');
+				return;
 			}
+
+			$kdJurusan = $this->input->post('kd_jurusan', TRUE);
+			$kdTingkatan = $this->input->post('kd_tingkatan', TRUE);
+			$semester = $this->input->post('semester', TRUE);
+
+			if (empty($kdJurusan) || empty($kdTingkatan) || empty($semester)) {
+				if ($this->input->is_ajax_request()) {
+					header('Content-Type: application/json');
+					echo json_encode(array('status' => 'error', 'message' => 'Filter jurusan, tingkatan, dan semester harus dipilih.'));
+					return;
+				}
+
+				$this->session->set_flashdata('error', 'Filter jurusan, tingkatan, dan semester harus dipilih.');
+				redirect('jadwal');
+				return;
+			}
+
+			$this->model_jadwal->generateJadwal($kdJurusan, $kdTingkatan);
+
+			if ($this->input->is_ajax_request()) {
+				header('Content-Type: application/json');
+				echo json_encode(array('status' => 'success', 'message' => 'Data jadwal berhasil digenerate untuk tingkatan yang dipilih.'));
+				return;
+			}
+
+			$this->session->set_flashdata('success', 'Data jadwal berhasil digenerate untuk tingkatan yang dipilih.');
 			redirect('jadwal');
 		}
 
@@ -87,7 +114,7 @@
 
 						<td>".form_dropdown('jam', $jam_pelajaran, $row->jam, "class='form-control' id='jam".$row->id_jadwal."' onChange='updateJam(".$row->id_jadwal.")'")."</td>
 
-						<td  class='text-center'>".anchor('jadwal/delete_dataJadwal/'.$row->id_jadwal, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"')."</td>
+						<td  class='text-center'>".anchor('jadwal/delete_dataJadwal/'.$row->id_jadwal, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger btn-hapus" data-placement="top" title="Delete"')."</td>
 					 </tr>";
 				$no++;
 			}
@@ -139,7 +166,41 @@
 			$this->db->where('id_jadwal', $idjadwal);
 			$this->db->delete('tbl_jadwal');
 
+			if ($this->input->is_ajax_request()) {
+				header('Content-Type: application/json');
+				echo json_encode(array('status' => 'success', 'message' => 'Data jadwal berhasil dihapus.'));
+				return;
+			}
+
 			$this->session->set_flashdata('success', 'Data jadwal berhasil dihapus.');
+			redirect('jadwal');
+		}
+
+		function delete_all_dataJadwal()
+		{
+			$kelas = $this->input->get('kelas', TRUE);
+
+			if (empty($kelas)) {
+				if ($this->input->is_ajax_request()) {
+					header('Content-Type: application/json');
+					echo json_encode(array('status' => 'error', 'message' => 'Kelas belum dipilih.'));
+					return;
+				}
+
+				$this->session->set_flashdata('error', 'Kelas belum dipilih.');
+				redirect('jadwal');
+			}
+
+			$this->db->where('kd_kelas', $kelas);
+			$this->db->delete('tbl_jadwal');
+
+			if ($this->input->is_ajax_request()) {
+				header('Content-Type: application/json');
+				echo json_encode(array('status' => 'success', 'message' => 'Semua jadwal kelas berhasil dihapus.'));
+				return;
+			}
+
+			$this->session->set_flashdata('success', 'Semua jadwal kelas berhasil dihapus.');
 			redirect('jadwal');
 		}
 

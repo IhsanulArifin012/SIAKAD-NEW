@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open('kurikulum/edit', 'role="form" class="form-horizontal"');
+                echo form_open('kurikulum/edit', 'role="form" class="form-horizontal" id="form-kurikulum-edit"');
                 echo form_hidden('id_kurikulum', $kurikulum['id_kurikulum']);
             ?>
 
@@ -37,7 +37,7 @@
                       <label class="col-sm-2 control-label"></label>
 
                       <div class="col-sm-1">
-                        <button type="submit" name="submit" class="btn btn-primary btn-flat">Simpan</button>
+                        <button type="button" id="btn-update" class="btn btn-primary btn-flat">Simpan</button>
                       </div>
 
                       <div class="col-sm-1">
@@ -57,3 +57,23 @@
     </div>
     <!-- /.row -->
 </section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$('#btn-update').click(function(){
+
+    Swal.fire({
+        title: 'Simpan perubahan?',
+        text: 'Pastikan data sudah benar',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, simpan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-kurikulum-edit').submit();
+        }
+    });
+
+});
+</script>
