@@ -78,6 +78,7 @@
 <script src="<?php echo base_url(); ?>assets/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- siswa_aktif() -> untuk menampilkan view peserta didik ->terletak di controller Siswa -->
 <!-- combobox_kelas() -> untuk menampilkan data kelas sesuai jurusan yang dipilih -> terletak di controller Kelas -->
@@ -91,10 +92,27 @@
     $(document).on('click', '#btnNaikKelas', function(){
         var kelas = $("#cbkelas").val();
         if(!kelas){
-            alert('Kelas belum dipilih.');
+            Swal.fire({
+                title: 'Peringatan',
+                text: 'Kelas belum dipilih.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
             return;
         }
-        window.location.href = "<?php echo base_url('siswa/aksi_naikkelas?kelas='); ?>" + encodeURIComponent(kelas);
+
+        Swal.fire({
+            title: 'Naikkan kelas?',
+            text: 'Pastikan data sudah benar',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, naikkan',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "<?php echo base_url('siswa/aksi_naikkelas?kelas='); ?>" + encodeURIComponent(kelas);
+            }
+        });
     });
 </script>
 

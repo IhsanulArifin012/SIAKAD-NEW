@@ -22,7 +22,7 @@
 
 				<hr>
 
-				<form method="post" action="<?php echo site_url('import_siswa/do_import'); ?>" enctype="multipart/form-data">
+				<form method="post" action="<?php echo site_url('import_siswa/do_import'); ?>" enctype="multipart/form-data" id="form-import">
 					<div class="form-group">
 						<label for="importFile">File Excel</label>
 						<input type="file" class="form-control" id="importFile" name="file" accept=".xlsx,.xls" required>
@@ -30,7 +30,7 @@
 					</div>
 					<div class="text-right">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-						<button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Import</button>
+						<button type="button" id="btn-import" class="btn btn-primary"><i class="fa fa-upload"></i> Import</button>
 					</div>
 				</form>
 			</div>
@@ -45,4 +45,38 @@
 	});
 </script>
 <?php endif; ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).on('click', '#btn-import', function(e) {
+    e.preventDefault();
+
+    let form = document.getElementById('form-import');
+    let fileInput = document.getElementById('importFile');
+
+    if (!fileInput.value) {
+        Swal.fire({
+            title: 'Peringatan',
+            text: 'Silakan pilih file terlebih dahulu.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Import data?',
+        text: 'Pastikan file sudah sesuai format',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, import',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
+});
+</script>
 

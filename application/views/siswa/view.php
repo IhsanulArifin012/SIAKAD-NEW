@@ -103,3 +103,26 @@
 	</script>
 
 	<?php $this->load->view('siswa/_import_excel_modal'); ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).on('click', '.btn-hapus', function(e) {
+    e.preventDefault();
+
+    let url = $(this).attr('href');
+
+    Swal.fire({
+        title: 'Hapus data?',
+        text: 'Data tidak bisa dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+});
+</script>

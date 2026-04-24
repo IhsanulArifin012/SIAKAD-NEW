@@ -38,7 +38,7 @@
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
 		               		return anchor('siswa/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
-		               		'.anchor('siswa/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+		               		'.anchor('siswa/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger btn-hapus" data-placement="top" title="Delete"');
 		            }
 		        )
 		    );
@@ -65,9 +65,19 @@
 
 		function add()
 		{
-			if (isset($_POST['submit'])) {
+			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+				$nim = $this->input->post('nim', true);
+				
+				// Cek apakah NIM sudah ada
+				$cek = $this->db->get_where('tbl_siswa', ['nim' => $nim])->row();
+				if ($cek) {
+					$this->session->set_flashdata('error', 'NIM sudah terdaftar!');
+					redirect('siswa/add');
+				}
+				
 				$uploadFoto = $this->upload_foto_siswa();
 				$this->model_siswa->save($uploadFoto);
+				$this->session->set_flashdata('success', 'Data berhasil disimpan!');
 				redirect('siswa');
 			} else {
 				$this->template->load('template', 'siswa/add');
@@ -76,13 +86,24 @@
 
 		function edit()
 		{
-			if (isset($_POST['submit'])) {
+			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$uploadFoto = $this->upload_foto_siswa();
 				$this->model_siswa->update($uploadFoto);
+				$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
 				redirect('siswa');
 			} else {
-				$nim           = $this->uri->segment(3);
-				$data['siswa'] = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row_array();
+				$nim = $this->uri->segment(3);
+				if (empty($nim)) {
+					redirect('siswa');
+				}
+				
+				$data['siswa'] = $this->db->get_where('tbl_siswa', ['nim' => $nim])->row_array();
+				
+				if (!$data['siswa']) {
+					$this->session->set_flashdata('error', 'Data tidak ditemukan!');
+					redirect('siswa');
+				}
+				
 				$this->template->load('template', 'siswa/edit', $data);
 			}
 		}
@@ -93,6 +114,7 @@
 			if (!empty($nim)) {
 				$this->db->where('nim', $nim);
 				$this->db->delete('tbl_siswa');
+				$this->session->set_flashdata('success', 'Data berhasil dihapus!');
 			} 
 			redirect('siswa');
 		}

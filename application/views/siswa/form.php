@@ -4,6 +4,7 @@
   
   <!-- Load File jquery.min.js yang ada difolder js -->
   <script src="<?php echo base_url(); ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <script>
   $(document).ready(function(){
@@ -42,7 +43,7 @@
     }
     
     // Buat sebuah tag form untuk proses import data ke database
-    echo "<form method='post' action='".base_url('Siswa/import')."'>";
+    echo "<form method='post' action='".base_url('Siswa/import')."' id='form-import'>";
     
     // Buat sebuah div untuk alert validasi kosong
     echo "<div style='color: red;' id='kosong'>
@@ -132,12 +133,31 @@
       echo "<hr>";
       
       // Buat sebuah tombol untuk mengimport data ke database
-      echo "<button type='submit' name='import'>Import</button> ";
-      echo "<a href='".base_url("Siswa")."'>Cancel</a>";
+      echo "<button type='button' name='import' id='btn-import' class='btn btn-primary'>Import</button> ";
+      echo "<a href='".base_url("Siswa")."' class='btn btn-default'>Cancel</a>";
     }
     
     echo "</form>";
   }
   ?>
+
+<script>
+$(document).on('click', '#btn-import', function(e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Import data?',
+        text: 'Pastikan data sudah benar',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, import',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-import').submit();
+        }
+    });
+});
+</script>
 </body>
 </html>
