@@ -33,7 +33,8 @@
                     <tr>
                         <th>NO</th>
                         <th>KELAS</th>
-                        <th>NAMA JURUSAN</th>
+                        <!-- Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS) -->
+                        <!-- <th>NAMA JURUSAN</th> -->
                         <th>TINGKATAN</th>
                         <th>NAMA WALIKELAS</th>
                     </tr>
@@ -92,16 +93,19 @@
                         "data": "nama_kelas",
                         "width": "150px",
                     },
-                    { 
+                    // Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS)
+                    /*
+                    {
                         "data": "nama_jurusan",
                         "width": "100px;",
                         "class": "text-center",
                     },
-                    { 
+                    */
+                    {
                         "data": "nama_tingkatan",
                         "class": "text-center",
                     },
-                    { 
+                    {
                         "data": "nama_guru",
                     },
                 ]

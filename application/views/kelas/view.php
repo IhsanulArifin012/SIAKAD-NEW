@@ -21,7 +21,8 @@
                         <th>KODE KELAS</th>
                         <th>NAMA KELAS</th>
                         <th>TINGKATAN</th>
-                        <th>JURUSAN</th>
+                        <!-- Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS) -->
+                        <!-- <th>JURUSAN</th> -->
                         <th>AKSI</th>
                     </tr>
                 </thead>
@@ -67,20 +68,23 @@
                         "width": "150px",
                         "class": "text-center"
                     },
-                    { 
+                    {
                         "data": "nama_kelas",
                     },
-                    { 
+                    {
                         "data": "nama_tingkatan",
                         "width": "100px",
                         "class": "text-center"
                     },
-                    { 
+                    // Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS)
+                    /*
+                    {
                         "data": "nama_jurusan",
                         "width": "100px",
                         "class": "text-center"
                     },
-                    { 
+                    */
+                    {
                         "data": "aksi",
                         "width": "80px",
                         "class": "text-center"

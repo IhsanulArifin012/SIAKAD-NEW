@@ -13,9 +13,16 @@
                     <td>Semester</td>
                     <td> : <?php echo get_tahun_akademik('semester'); ?></td>
                 </tr>
+                <!-- Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS) -->
+                <!--
                 <tr>
                     <td>Jurusan &amp; Tingkatan</td>
                     <td> : <?php echo "Jurusan".' '.$kelas['nama_jurusan'].' '.$kelas['nama_tingkatan']; ?> (<?php echo $kelas['nama_kelas']; ?>)</td>
+                </tr>
+                -->
+                <tr>
+                    <td>Tingkatan</td>
+                    <td> : <?php echo $kelas['nama_tingkatan']; ?> (<?php echo $kelas['nama_kelas']; ?>)</td>
                 </tr>
                 <tr>
                     <td>Mata Pelajaran</td>
