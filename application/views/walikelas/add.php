@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var int $id_tahun_akademik
+ * @var array $kelas
+ * @var array $guru
+ */
+?>
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
