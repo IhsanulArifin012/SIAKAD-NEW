@@ -445,6 +445,10 @@ echo "<li class='$is_active'>".anchor($main->link,"<i class='".$main->icon."'></
 
 <script src="<?php echo base_url(); ?>assets/dist/js/adminlte.min.js"></script>
 
+<!-- SweetAlert2 Offline -->
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/sweetalert2/sweetalert2.min.css">
+<script src="<?php echo base_url(); ?>assets/sweetalert2/sweetalert2.min.js"></script>
+
 <script>
   $(function () {
     window.setTimeout(function () {
@@ -456,7 +460,6 @@ echo "<li class='$is_active'>".anchor($main->link,"<i class='".$main->icon."'></
 </script>
 
 </body>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 var flashSuccess = <?php echo json_encode($success ?: ''); ?>;
 var flashError = <?php echo json_encode($error ?: ''); ?>;
@@ -466,6 +469,10 @@ if (flashSuccess) {
 if (flashError) {
     Swal.fire('Gagal', flashError, 'error');
 }
+
+// ========== GLOBAL CRUD HANDLER ==========
+
+// DELETE - Event delegation untuk semua tombol hapus
 $(document).on('click', '.btn-hapus', function(e) {
     e.preventDefault();
 
@@ -481,6 +488,113 @@ $(document).on('click', '.btn-hapus', function(e) {
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = url;
+        }
+    });
+});
+
+// CREATE & UPDATE - Button click handler (btn-simpan)
+$(document).on('click', '#btn-simpan', function(e) {
+    e.preventDefault();
+    
+    let form = $(this).closest('form').get(0);
+    
+    Swal.fire({
+        title: 'Simpan data?',
+        text: 'Pastikan data sudah benar',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, simpan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Untuk button: form.submit()
+            if (form) {
+                form.submit();
+            }
+        }
+    });
+});
+
+// CREATE & UPDATE - Form submit handler (form-simpan)
+$(document).on('submit', '#form-simpan', function(e) {
+    e.preventDefault();
+    
+    let form = this;
+    
+    Swal.fire({
+        title: 'Simpan data?',
+        text: 'Pastikan data sudah benar',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, simpan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Untuk submit event: HTMLFormElement.prototype.submit.call(form)
+            HTMLFormElement.prototype.submit.call(form);
+        }
+    });
+});
+
+// AKSI TAMBAHAN - Custom action handler (btn-aksi)
+$(document).on('click', '.btn-aksi', function(e) {
+    e.preventDefault();
+    
+    let url = $(this).attr('href');
+    let isDropdown = $(this).hasClass('btn-dropdown');
+    let hasValue = true;
+    
+    // Cek jika ini adalah dropdown yang perlu validasi
+    if (isDropdown) {
+        let targetSelector = $(this).data('target');
+        if (targetSelector) {
+            let value = $(targetSelector).val();
+            if (!value || value === '') {
+                hasValue = false;
+            }
+        }
+    }
+    
+    if (!hasValue) {
+        Swal.fire({
+            title: 'Peringatan',
+            text: 'Silakan pilih terlebih dahulu!',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+    
+    Swal.fire({
+        title: 'Lanjutkan proses?',
+        text: 'Pastikan data sudah benar',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, lanjutkan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+});
+
+// Form dengan class btn-aksi-form (untuk form submit)
+$(document).on('submit', '.btn-aksi-form', function(e) {
+    e.preventDefault();
+    
+    let form = this;
+    
+    Swal.fire({
+        title: 'Lanjutkan proses?',
+        text: 'Pastikan data sudah benar',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, lanjutkan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            HTMLFormElement.prototype.submit.call(form);
         }
     });
 });

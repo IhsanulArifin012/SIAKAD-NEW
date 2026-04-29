@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open_multipart('user/add', 'role="form" class="form-horizontal" id="formAddUser"');
+                echo form_open_multipart('user/add', 'role="form" class="form-horizontal" id="form-simpan"');
                 echo form_hidden('submit', '1');
             ?>
 
@@ -81,37 +81,3 @@
     </div>
     <!-- /.row -->
 </section>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    $(document).ready(function() {
-        $('#formAddUser').on('submit', function(e) {
-            e.preventDefault();
-            var form = this;
-
-            var submitForm = function() {
-                HTMLFormElement.prototype.submit.call(form);
-            };
-
-            if (typeof Swal === 'undefined') {
-                if (confirm('Simpan data user?\nApakah Anda yakin ingin menyimpan data user ini?')) {
-                    submitForm();
-                }
-                return;
-            }
-
-            Swal.fire({
-                title: 'Simpan data user?',
-                text: 'Apakah Anda yakin ingin menyimpan data user ini?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, simpan',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    submitForm();
-                }
-            });
-        });
-    });
-</script>

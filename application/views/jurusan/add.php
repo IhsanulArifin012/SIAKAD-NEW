@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open('jurusan/add', 'role="form" class="form-horizontal" id="form-jurusan-add"');
+                echo form_open('jurusan/add', 'role="form" class="form-horizontal" id="form-simpan"');
             ?>
 
                 <div class="box-body">
@@ -53,32 +53,4 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
-     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-$(function(){
-
-    $('#btn-simpan').click(function(){
-
-        Swal.fire({
-            title: 'Simpan data?',
-            text: 'Pastikan data jurusan sudah benar',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, simpan',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-
-                $('#form-jurusan-add')[0].submit();
-
-            }
-        });
-
-    });
-
-});
-</script>
 </section>

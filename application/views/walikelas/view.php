@@ -23,6 +23,7 @@
           <div class="box box-primary">
             <div class="box-header  with-border">
               <h3 class="box-title">Data Table Walikelas</h3>
+              <?php echo anchor('walikelas/add', '<i class="fa fa-plus"></i> Tambah Walikelas', 'class="btn btn-primary btn-flat"'); ?>
             </div>
             <!-- /.box-header -->
             <div class="box-body">

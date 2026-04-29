@@ -81,26 +81,4 @@
     </div>
     <!-- /.row -->
 </section>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-$(document).on('submit', '#form-simpan', function(e) {
-    e.preventDefault();
-
-    let form = this;
-
-    Swal.fire({
-        title: 'Simpan data?',
-        text: 'Pastikan data sudah benar',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, simpan',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-           
-            HTMLFormElement.prototype.submit.call(form);
-        }
-    });
-});
-</script>

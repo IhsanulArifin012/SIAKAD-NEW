@@ -1,0 +1,35 @@
+<?php
+$host = 'localhost';
+$user = 'root';
+$pass = 'crud123';
+$db   = 'sekolahh';
+
+$conn = mysqli_connect($host, $user, $pass, $db);
+if (!$conn) { die('Connection failed: ' . mysqli_connect_error()); }
+
+echo "=== CEK TIDAK SESUAI: kd_kelas di tbl_walikelas TIDAK ada di tbl_kelas ===\n";
+$wk_result = mysqli_query($conn, "SELECT * FROM tbl_walikelas");
+while($wk = mysqli_fetch_assoc($wk_result)) {
+    $kelas = mysqli_query($conn, "SELECT * FROM tbl_kelas WHERE kd_kelas = '".$wk['kd_kelas']."'");
+    if (mysqli_num_rows($kelas) == 0) {
+        echo "TIDAK ADA: id_walikelas=".$wk['id_walikelas'].", kd_kelas='".$wk['kd_kelas']."', id_tahun_akademik=".$wk['id_tahun_akademik']."\n";
+    }
+}
+
+echo "\n=== CEK APAKAH ADA KELAS DI tbl_kelas YANG TIDAK ADA DI tbl_walikelas (tahun 6) ===\n";
+$result = mysqli_query($conn, "SELECT kd_kelas, nama_kelas FROM tbl_kelas");
+while($row = mysqli_fetch_assoc($result)) {
+    $wk = mysqli_query($conn, "SELECT * FROM tbl_walikelas WHERE kd_kelas = '".$row['kd_kelas']."' AND id_tahun_akademik = 6");
+    if (mysqli_num_rows($wk) == 0) {
+        echo "TIDAK ADA DI WALIKELAS: ".$row['kd_kelas']." - ".$row['nama_kelas']."\n";
+    }
+}
+
+echo "\n=== VIEW: Lihat semua data ===\n";
+$result = mysqli_query($conn, "SELECT * FROM view_walikelas");
+echo 'Jumlah total: ' . mysqli_num_rows($result) . "\n";
+while($row = mysqli_fetch_assoc($result)) {
+    echo "- " . $row['nama_kelas'] . " | " . $row['nama_guru'] . " | " . $row['tahun_akademik'] . " | id_ta=" . $row['id_tahun_akademik'] . "\n";
+}
+
+mysqli_close($conn);

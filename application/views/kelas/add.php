@@ -82,24 +82,4 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-$(document).on('click', '#btn-simpan', function(){
-
-    Swal.fire({
-        title: 'Simpan data?',
-        text: 'Pastikan data kelas sudah benar',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, simpan',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            document.getElementById('form-kelas-add').submit();
-        }
-    });
-
-});
-</script>
 </section>

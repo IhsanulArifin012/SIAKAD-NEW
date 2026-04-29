@@ -78,23 +78,3 @@
     </div>
     <!-- /.row -->
 </section>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-$('#btn-simpan').click(function(){
-
-    Swal.fire({
-        title: 'Simpan data?',
-        text: 'Pastikan data detail sudah benar',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, simpan',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            document.getElementById('form-detail').submit();
-        }
-    });
-
-});
-</script>

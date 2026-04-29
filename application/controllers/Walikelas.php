@@ -75,6 +75,51 @@
 			$this->db->update('tbl_walikelas', array('id_guru' => $id_guru));
 		}
 
+		function add()
+		{
+			$this->load->library('form_validation');
+			
+			// Get tahun akademik aktif
+			$id_tahun_akademik = get_tahun_akademik('id_tahun_akademik');
+			
+			// Get kelas yang belum ada di walikelas untuk tahun akademik aktif
+			$sql = "SELECT kd_kelas, nama_kelas FROM tbl_kelas 
+					WHERE kd_kelas NOT IN (
+						SELECT kd_kelas FROM tbl_walikelas 
+						WHERE id_tahun_akademik = ?
+					)
+					ORDER BY kd_kelas";
+			$kelas = $this->db->query($sql, array($id_tahun_akademik))->result();
+			
+			// Get semua guru
+			$guru = $this->db->get('tbl_guru')->result();
+			
+			$data = array(
+				'kelas' => $kelas,
+				'guru'  => $guru,
+				'id_tahun_akademik' => $id_tahun_akademik
+			);
+			
+			$this->template->load('template', 'walikelas/add', $data);
+		}
+
+		function save()
+		{
+			$kd_kelas = $this->input->post('kd_kelas', TRUE);
+			$id_guru  = $this->input->post('id_guru', TRUE);
+			$id_tahun_akademik = $this->input->post('id_tahun_akademik', TRUE);
+			
+			$data = array(
+				'kd_kelas' => $kd_kelas,
+				'id_guru'  => $id_guru,
+				'id_tahun_akademik' => $id_tahun_akademik
+			);
+			
+			$this->db->insert('tbl_walikelas', $data);
+			
+			redirect('walikelas');
+		}
+
 	}
 
 ?>

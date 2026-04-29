@@ -2,33 +2,33 @@
     <div class="row">
         <div class="col-xs-12">
 
-          <div class="box box-primary">
-            <div class="box-header  with-border">
-              <h3 class="box-title">Data Table Kurikulum</h3>
+            <div class="box box-primary">
+                <div class="box-header  with-border">
+                    <h3 class="box-title">Data Table Kurikulum</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+
+                    <!-- button add -->
+                    <?php
+                    echo anchor('kurikulum/add', '<button class="btn bg-navy btn-flat margin">Tambah Data</button>');
+                    ?>
+
+                    <table id="mytable" class="table table-striped table-bordered table-hover table-full-width dataTable" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>NO</th>
+                                <th>NAMA KURIKULUM</th>
+                                <th>IS AKTIF</th>
+                                <th>AKSI</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+                <!-- /.box-body -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-
-            <!-- button add -->
-            <?php
-                echo anchor('kurikulum/add', '<button class="btn bg-navy btn-flat margin">Tambah Data</button>');
-            ?>
-
-              <table id="mytable" class="table table-striped table-bordered table-hover table-full-width dataTable" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>NO</th>
-                        <th>NAMA KURIKULUM</th>
-                        <th>IS AKTIF</th>
-                        <th>AKSI</th>
-                    </tr>
-                </thead>
-              </table>
-
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
+            <!-- /.box -->
         </div>
         <!-- /.col -->
     </div>
@@ -49,60 +49,83 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
 <script>
-        $(document).ready(function() {
-            var t = $('#mytable').DataTable( {
-                "ajax": '<?php echo site_url('kurikulum/data'); ?>',
-                "order": [[ 1, 'desc' ]],
-                "columns": [
-                    {
-                        "data": null,
-                        "width": "50px",
-                        "class": "text-center",
-                        "orderable": false,
-                    },
-                    {
-                        "data": "nama_kurikulum",
-                    },
-                    {
-                        "data": "is_aktif",
-                        "width": "150px",
-                        "class": "text-center"
-                    },
-                    {
-                        "data": "aksi",
-                        "width": "120px",
-                        "class": "text-center"
-                    },
-                ]
-            } );
+    $(document).ready(function() {
+        var t = $('#mytable').DataTable({
+            "ajax": '<?php echo site_url('kurikulum/data'); ?>',
+            "order": [
+                [1, 'desc']
+            ],
+            "columns": [{
+                    "data": null,
+                    "width": "50px",
+                    "class": "text-center",
+                    "orderable": false,
+                },
+                {
+                    "data": "nama_kurikulum",
+                },
+                {
+                    "data": "is_aktif",
+                    "width": "150px",
+                    "class": "text-center"
+                },
+                {
+                    "data": "aksi",
+                    "width": "120px",
+                    "class": "text-center"
+                },
+            ]
+        });
 
-            t.on( 'order.dt search.dt', function () {
-                t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-                    cell.innerHTML = i+1;
-                } );
-            } ).draw();
-        } );
+        t.on('order.dt search.dt', function() {
+            t.column(0, {
+                search: 'applied',
+                order: 'applied'
+            }).nodes().each(function(cell, i) {
+                cell.innerHTML = i + 1;
+            });
+        }).draw();
+    });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- SweetAlert2 Offline -->
+<link rel="stylesheet" href="<?php echo base_url('assets/sweetalert2/sweetalert2.min.css'); ?>">
+<script src="<?php echo base_url('assets/sweetalert2/sweetalert2.min.js'); ?>"></script>
+<?php if ($this->session->flashdata('error')): ?>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: '<?php echo $this->session->flashdata('error'); ?>'
+        });
+    </script>
+<?php endif; ?>
+<?php if ($this->session->flashdata('success')): ?>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '<?php echo $this->session->flashdata('success'); ?>'
+        });
+    </script>
+<?php endif; ?>
 
 <script>
-$(document).on('click', '.btn-hapus', function(e){
-    e.preventDefault();
+    $(document).on('click', '.btn-hapus', function(e) {
+        e.preventDefault();
 
-    let url = $(this).attr('href');
+        let url = $(this).attr('href');
 
-    Swal.fire({
-        title: 'Hapus data?',
-        text: 'Data tidak bisa dikembalikan!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, hapus',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = url;
-        }
+        Swal.fire({
+            title: 'Hapus data?',
+            text: 'Data tidak bisa dikembalikan!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     });
-});
 </script>

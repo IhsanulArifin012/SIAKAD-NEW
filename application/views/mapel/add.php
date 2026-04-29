@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open('mapel/add', 'role="form" class="form-horizontal" id="form-add"');
+                echo form_open('mapel/add', 'role="form" class="form-horizontal" id="form-simpan"');
             ?>
 
                 <div class="box-body">
@@ -53,31 +53,4 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
-</section>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var form = document.getElementById('form-add');
-    if (!form) return;
-    var confirmed = false;
-    form.addEventListener('submit', function(e) {
-        if (confirmed) {
-            return;
-        }
-        e.preventDefault();
-        Swal.fire({
-            title: 'Simpan data?',
-            text: 'Pastikan data sudah benar.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, simpan',
-            cancelButtonText: 'Batal'
-        }).then(function(result) {
-            if (result.isConfirmed) {
-                confirmed = true;
-                form.submit();
-            }
-        });
-    });
-});
-</script> 
+</section> 

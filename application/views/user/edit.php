@@ -9,7 +9,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <?php
-                echo form_open_multipart('user/edit', 'role="form" class="form-horizontal" id="formEditUser"');
+                echo form_open_multipart('user/edit', 'role="form" class="form-horizontal" id="form-simpan"');
                 echo form_hidden('submit', '1');
                 echo form_hidden('id_user', $user['id_user']);
             ?>
@@ -83,37 +83,3 @@
     </div>
     <!-- /.row -->
 </section>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    $(document).ready(function() {
-        $('#formEditUser').on('submit', function(e) {
-            e.preventDefault();
-            var form = this;
-
-            var submitForm = function() {
-                HTMLFormElement.prototype.submit.call(form);
-            };
-
-            if (typeof Swal === 'undefined') {
-                if (confirm('Simpan perubahan?\nApakah Anda yakin ingin menyimpan perubahan data user ini?')) {
-                    submitForm();
-                }
-                return;
-            }
-
-            Swal.fire({
-                title: 'Simpan perubahan?',
-                text: 'Apakah Anda yakin ingin menyimpan perubahan data user ini?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, simpan',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    submitForm();
-                }
-            });
-        });
-    });
-</script>

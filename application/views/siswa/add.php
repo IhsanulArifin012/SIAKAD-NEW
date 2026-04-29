@@ -104,29 +104,4 @@
     </div>
     <!-- /.row -->
 </section>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-$(function(){
-
-    $('#btn-simpan').click(function(){
-        var btn = $(this);
-
-        Swal.fire({
-            title: 'Simpan data?',
-            text: 'Pastikan data sudah benar',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, simpan',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                btn.prop('disabled', true).text('Menyimpan...');
-                document.getElementById('form-simpan').submit();
-            }
-        });
-
-    });
-
-});
-</script>

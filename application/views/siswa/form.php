@@ -4,7 +4,6 @@
   
   <!-- Load File jquery.min.js yang ada difolder js -->
   <script src="<?php echo base_url(); ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <script>
   $(document).ready(function(){
