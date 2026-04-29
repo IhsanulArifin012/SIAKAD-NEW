@@ -40,6 +40,8 @@
                       </div>
                   </div>
 
+                  <!-- Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS) -->
+                  <!--
                   <div class="form-group">
                       <label class="col-sm-2 control-label">Jurusan</label>
 
@@ -49,6 +51,7 @@
                         ?>
                       </div>
                   </div>
+                  -->
 
                   <div class="form-group">
                       <label class="col-sm-2 control-label"></label>

@@ -327,6 +327,9 @@ if ($id_level_user > 0)
 // Hide "Peserta Didik" untuk role Guru.
 $hide_peserta_didik = ($id_level_user === 3);
 
+// Hide "Jurusan" untuk SD (tidak ada jurusan IPA/IPS)
+$hide_jurusan = true;
+
 // Hide "Laporan Nilai" untuk role Guru yang bukan wali kelas aktif (agar tidak memunculkan error).
 $allow_laporan_nilai = true;
 if ($id_level_user === 3)
@@ -350,6 +353,11 @@ if ($id_level_user === 3)
 foreach ($main_menu as $main){
 
 if ($hide_peserta_didik && $main->link === 'siswa/siswa_aktif')
+{
+	continue;
+}
+
+if ($hide_jurusan && ($main->link === 'jurusan' || strpos($main->link, 'jurusan') !== false))
 {
 	continue;
 }
@@ -384,6 +392,10 @@ echo "<ul class='treeview-menu'>";
 	foreach($submenu->result() as $sub){
 	$subLink = $sub->link;
 	if ($hide_peserta_didik && $subLink === 'siswa/siswa_aktif')
+	{
+		continue;
+	}
+	if ($hide_jurusan && ($subLink === 'jurusan' || strpos($subLink, 'jurusan') !== false))
 	{
 		continue;
 	}

@@ -16,6 +16,8 @@
                 ?>
 
                 <table class="table table-bordered">
+                    <!-- Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS) -->
+                    <!--
                     <tr>
                         <td>Jurusan</td>
                         <td>
@@ -23,9 +25,10 @@
                             ?>        
                         </td>
                     </tr>
+                    -->
                     <tr>
                         <td>Kelas</td>
-                        <td>    
+                        <td>
                             <div id="kelas"></div>
                         </td>
                     </tr>
@@ -93,9 +96,10 @@
 <script type="text/javascript">
     function loadKelas()
     {
-        //var tingkatan_kelas = $("#filter_tingkatan").val();
-        var jurusan         = $("#filter_jurusan").val();
-        
+        // Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS)
+        // var jurusan = $("#filter_jurusan").val();
+        var jurusan = ""; // Kirim string kosong jika tidak ada jurusan
+
         $.ajax({
             type    : 'GET',
             url     : '<?php echo base_url() ?>kelas/combobox_kelas',
