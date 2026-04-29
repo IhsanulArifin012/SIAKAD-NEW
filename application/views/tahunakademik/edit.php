@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var array $tahunakademik Data tahun akademik dari controller
+ * @property int $tahunakademik['id_tahun_akademik']
+ * @property string $tahunakademik['tahun_akademik']
+ * @property string $tahunakademik['is_aktif']
+ * @property string $tahunakademik['semester']
+ */
+?>
 <section class="content">
   <div class="row">
     <div class="col-xs-12">

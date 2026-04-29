@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var array $jurusan Data jurusan dari controller
+ * @property string $jurusan['kd_jurusan']
+ * @property string $jurusan['nama_jurusan']
+ */
+?>
 <section class="content">
     <div class="row">
         <div class="col-xs-12">

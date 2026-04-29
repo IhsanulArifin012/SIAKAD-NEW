@@ -1,4 +1,10 @@
-<section class="content">
+<?php
+/**
+ * @var array $tingkatan Data tingkatan dari controller
+ * @property string $tingkatan['kd_tingkatan']
+ * @property string $tingkatan['nama_tingkatan']
+ */
+?><section class="content">
   <div class="row">
     <div class="col-xs-12">
 

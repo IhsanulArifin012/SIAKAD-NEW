@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var object $jadwal Data jadwal dari controller (CI_DB_result)
+ */
+?>
 <section class="content">
     <div class="row">
 

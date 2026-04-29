@@ -1,3 +1,14 @@
+<?php
+/**
+ * @var array $guru Data guru dari controller
+ * @property int $guru['id_guru']
+ * @property string $guru['nuptk']
+ * @property string $guru['nama_guru']
+ * @property string $guru['gender']
+ * @property string $guru['username']
+ * @property string $guru['password']
+ */
+?>
 <section class="content">
     <div class="row">
         <div class="col-xs-12">

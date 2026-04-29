@@ -1,3 +1,13 @@
+<?php
+/**
+ * @var array $kelas Data kelas dari controller
+ * @property string $kelas['nama_jurusan']
+ * @property string $kelas['nama_tingkatan']
+ * @property string $kelas['nama_kelas']
+ * @property string $kelas['nama_mapel']
+ * @var array $siswa Data siswa dari controller
+ */
+?>
 <section class="content">
     <div class="row">
 

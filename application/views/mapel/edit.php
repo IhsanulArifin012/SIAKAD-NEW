@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var array $mapel Data mapel dari controller
+ * @property string $mapel['kd_mapel']
+ * @property string $mapel['nama_mapel']
+ */
+?>
 <section class="content">
     <div class="row">
         <div class="col-xs-12">

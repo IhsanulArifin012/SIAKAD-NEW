@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var array $kurikulum Data kurikulum dari controller
+ * @property int $kurikulum['id_kurikulum']
+ * @property string $kurikulum['nama_kurikulum']
+ * @property string $kurikulum['is_aktif']
+ */
+?>
 <section class="content">
   <div class="row">
     <div class="col-xs-12">

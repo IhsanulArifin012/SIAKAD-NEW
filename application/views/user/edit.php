@@ -1,3 +1,14 @@
+<?php
+/**
+ * @var array $user Data user dari controller
+ * @property int $user['id_user']
+ * @property string $user['nama_lengkap']
+ * @property string $user['username']
+ * @property string $user['password']
+ * @property int $user['id_level_user']
+ * @property string $user['foto']
+ */
+?>
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
