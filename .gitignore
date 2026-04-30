@@ -1,0 +1,38 @@
+# Konfigurasi Database (berisi password)
+application/config/database.php
+
+# File script dengan kredensial database
+check_db.php
+
+# File upload
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+application/logs/*
+!application/logs/index.html
+
+# Cache
+application/cache/*
+!application/cache/index.html
+!application/cache/.htaccess
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Composer
+vendor/
+
+# Node modules (jika ada)
+node_modules/
