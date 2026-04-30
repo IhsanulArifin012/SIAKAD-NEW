@@ -34,7 +34,6 @@
 			$data = array(
 				'id_kurikulum'	=> $this->input->post('kurikulum', TRUE),
 				'kd_mapel'		=> $this->input->post('mapel', TRUE),
-				'kd_jurusan'	=> $this->input->post('jurusan', TRUE),
 				'kd_tingkatan'	=> $this->input->post('tingkatan', TRUE)
 			);
 			$this->db->insert('tbl_kurikulum_detail', $data);

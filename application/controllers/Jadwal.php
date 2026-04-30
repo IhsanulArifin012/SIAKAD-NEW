@@ -35,23 +35,22 @@
 				return;
 			}
 
-			$kdJurusan = $this->input->post('kd_jurusan', TRUE);
 			$kdTingkatan = $this->input->post('kd_tingkatan', TRUE);
 			$semester = $this->input->post('semester', TRUE);
 
-			if (empty($kdJurusan) || empty($kdTingkatan) || empty($semester)) {
+			if (empty($kdTingkatan) || empty($semester)) {
 				if ($this->input->is_ajax_request()) {
 					header('Content-Type: application/json');
-					echo json_encode(array('status' => 'error', 'message' => 'Filter jurusan, tingkatan, dan semester harus dipilih.'));
+					echo json_encode(array('status' => 'error', 'message' => 'Filter tingkatan dan semester harus dipilih.'));
 					return;
 				}
 
-				$this->session->set_flashdata('error', 'Filter jurusan, tingkatan, dan semester harus dipilih.');
+				$this->session->set_flashdata('error', 'Filter tingkatan dan semester harus dipilih.');
 				redirect('jadwal');
 				return;
 			}
 
-			$this->model_jadwal->generateJadwal($kdJurusan, $kdTingkatan);
+			$this->model_jadwal->generateJadwal($kdTingkatan);
 
 			if ($this->input->is_ajax_request()) {
 				header('Content-Type: application/json');
@@ -65,7 +64,6 @@
 
 		function dataJadwal()
 		{
-			$kode_jurusan		= $_GET['kd_jurusan'];
 			$kode_tingkatan		= $_GET['kd_tingkatan'];
 			//$idkurikulum		= $_GET['kurikulumnya'];
 			$kelas 				= $_GET['kelas'];
@@ -85,7 +83,7 @@
 
   			$sql_datajadwal	= "SELECT tj.id_jadwal, tm.nama_mapel, tg.id_guru, tg.nama_guru, tr.kd_ruangan, tj.hari, 				   tj.jam
 							   FROM tbl_jadwal AS tj, tbl_mapel AS tm, tbl_guru AS tg, tbl_ruangan AS tr
-							   WHERE tj.kd_mapel = tm.kd_mapel AND tj.id_guru = tg.id_guru AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_jurusan = '$kode_jurusan' AND tj.kd_kelas = '$kelas'";
+							   WHERE tj.kd_mapel = tm.kd_mapel AND tj.id_guru = tg.id_guru AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_kelas = '$kelas'";
 			$data_jadwal	= $this->db->query($sql_datajadwal)->result();
 			$no = 1;
 			$jam_pelajaran	= $this->model_jadwal->jamPelajaran();
@@ -213,7 +211,6 @@
 			// $kelas = $this->db->get_where('tbl_kelas', $where);
 
 			// menggunakan get
-			$this->db->where('kd_jurusan', $_GET['kd_jurusan']);
 			$this->db->where('kd_tingkatan', $_GET['kd_tingkatan']);
 			$kelas = $this->db->get('tbl_kelas');
 			
@@ -226,7 +223,6 @@
 
 		function cetak_jadwal() {
 	 		$kelas = $this->input->post('kelas', TRUE);
-	 		$kdJurusan = $this->input->post('jurusan', TRUE);
 	 		$kdTingkatan = $this->input->post('tingkatan_kelas', TRUE);
 
 	 		if (empty($kelas))
@@ -246,11 +242,6 @@
 	 				WHERE tj.kd_kelas = ?";
 	 		$params = array($kelas);
 
-	 		if ( ! empty($kdJurusan))
-	 		{
-	 			$sql .= " AND tj.kd_jurusan = ?";
-	 			$params[] = $kdJurusan;
-	 		}
 	 		if ( ! empty($kdTingkatan))
 	 		{
 	 			$sql .= " AND tj.kd_tingkatan = ?";

@@ -14,13 +14,6 @@
                     echo form_open('jadwal/cetak_jadwal');
                 ?>
                 <table class="table table-bordered">
-                    <tr>
-                        <td>Jurusan</td>
-                        <td>
-                            <?php echo cmb_dinamis('jurusan', 'tbl_jurusan', 'nama_jurusan', 'kd_jurusan', null, "id='filter_jurusan' onChange='loadKelas()'") 
-                            ?>        
-                        </td>
-                    </tr>
 
                     <tr>
                         <td>Tingkatan Kelas</td>
@@ -102,7 +95,6 @@
         loadKelas();
 
         $('#myModal').on('show.bs.modal', function () {
-            $('#generate_kd_jurusan').val($('#filter_jurusan').val());
             $('#generate_kd_tingkatan').val($('#filter_tingkatan').val());
             $('#generate_kd_kelas').val($('#kelas').val());
         });
@@ -110,14 +102,13 @@
         $('#formGenerateJadwal').on('submit', function(e) {
             e.preventDefault();
 
-            var jurusan = $('#filter_jurusan').val();
             var tingkatan = $('#filter_tingkatan').val();
             var kelas = $('#kelas').val();
             var kurikulum = $('#formGenerateJadwal select[name="kurikulum"]').val();
             var semester = $('#formGenerateJadwal select[name="semester"]').val();
 
-            if (!jurusan || !tingkatan) {
-                Swal.fire('Pilih filter dulu', 'Silakan pilih jurusan dan tingkatan terlebih dahulu sebelum generate jadwal.', 'warning');
+            if (!tingkatan) {
+                Swal.fire('Pilih filter dulu', 'Silakan pilih tingkatan terlebih dahulu sebelum generate jadwal.', 'warning');
                 return;
             }
 
@@ -128,7 +119,6 @@
                     submit: 1,
                     kurikulum: kurikulum,
                     semester: semester,
-                    kd_jurusan: jurusan,
                     kd_tingkatan: tingkatan
                 },
                 dataType: 'json',
@@ -154,11 +144,10 @@
     function loadKelas()
     {
         var tingkatan_kelas = $("#filter_tingkatan").val();
-        var jurusan         = $("#filter_jurusan").val();
         $.ajax({
             type    : 'GET',
             url     : '<?php echo base_url() ?>jadwal/tampil_kelas',
-            data    : 'kd_jurusan='+jurusan+'&kd_tingkatan='+tingkatan_kelas,
+            data    : 'kd_tingkatan='+tingkatan_kelas,
             success : function(html) {
                 $("#tampilKelas").html(html);
                 loadPelajaran();
@@ -169,12 +158,11 @@
     function loadPelajaran()
     {
         var tingkatan_kelas = $("#filter_tingkatan").val();
-        var jurusan         = $("#filter_jurusan").val();
         var kelas          = $("#kelas").val();
         $.ajax({
             type    : 'GET',
             url     : '<?php echo base_url() ?>jadwal/dataJadwal',
-            data    : 'kd_jurusan='+jurusan+'&kd_tingkatan='+tingkatan_kelas+'&kelas='+kelas,
+            data    : 'kd_tingkatan='+tingkatan_kelas+'&kelas='+kelas,
             success : function(html) {
                 $("#table_daftarpelajaran").html(html);
             }
@@ -236,7 +224,6 @@
 
     function deleteAllJadwal()
     {
-        var jurusan         = $("#filter_jurusan").val();
         var tingkatan_kelas = $("#filter_tingkatan").val();
         var kelas           = $("#kelas").val();
 
@@ -257,7 +244,7 @@
                 $.ajax({
                     type    : 'GET',
                     url     : '<?php echo base_url() ?>jadwal/delete_all_dataJadwal',
-                    data    : 'kd_jurusan='+jurusan+'&kd_tingkatan='+tingkatan_kelas+'&kelas='+kelas,
+                    data    : 'kd_tingkatan='+tingkatan_kelas+'&kelas='+kelas,
                     dataType: 'json',
                     success : function(response) {
                         if (response.status === 'success') {
@@ -308,7 +295,6 @@
                         </td>
                     </tr>
                 </table>
-                <input type="hidden" id="generate_kd_jurusan" name="kd_jurusan" value="" />
                 <input type="hidden" id="generate_kd_tingkatan" name="kd_tingkatan" value="" />
                 <input type="hidden" id="generate_kd_kelas" name="kelas" value="" />
 
