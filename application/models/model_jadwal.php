@@ -20,14 +20,11 @@
 	 		 return $jam_pelajaran;
 	 	}
 
-function generateJadwal($kdJurusan = null, $kdTingkatan = null)
+function generateJadwal($kdTingkatan = null)
 	  	{
 	  		$idkurikulum	 = $this->input->post('kurikulum');
 			$semester		 = $this->input->post('semester');
 			$this->db->where('id_kurikulum', $idkurikulum);
-			if ( ! empty($kdJurusan)) {
-				$this->db->where('kd_jurusan', $kdJurusan);
-			}
 			if ( ! empty($kdTingkatan)) {
 				$this->db->where('kd_tingkatan', $kdTingkatan);
 			}
@@ -40,14 +37,13 @@ function generateJadwal($kdJurusan = null, $kdTingkatan = null)
 
 			foreach ($kurikulumDetail->result() as $row) {
 
-				// ambil kelas berdasarkan tingkatan dan jurusan
-				$kelasnya = $this->db->get_where('tbl_kelas', array('kd_jurusan' => $row->kd_jurusan, 'kd_tingkatan' => $row->kd_tingkatan));
+				// ambil kelas berdasarkan tingkatan
+				$kelasnya = $this->db->get_where('tbl_kelas', array('kd_tingkatan' => $row->kd_tingkatan));
 
 				foreach ($kelasnya->result() as $row_kelas) {
 					$data = array(
 						'id_tahun_akademik' => $tahunakademik['id_tahun_akademik'], 
 						'semester'			=> $semester,
-						'kd_jurusan'		=> $row->kd_jurusan, 
 						'kd_tingkatan'		=> $row->kd_tingkatan, //sama seperti kelas di akademik
 						'kd_kelas'			=> $row_kelas->kd_kelas, //sama seperti rombel di akademik
 						'kd_mapel'			=> $row->kd_mapel, 

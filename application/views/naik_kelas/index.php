@@ -10,12 +10,6 @@
 					<div class="row">
 						<div class="col-md-4">
 							<div class="form-group">
-								<label>Jurusan</label>
-								<?php echo cmb_dinamis('jurusan', 'tbl_jurusan', 'nama_jurusan', 'kd_jurusan', null, "id='filter_jurusan' onchange='loadKelasAsal()'"); ?>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
 								<label>Kelas Asal</label>
 								<div id="kelas_asal"></div>
 							</div>
@@ -55,13 +49,11 @@
 
 <script>
 	function loadKelasAsal() {
-		var jurusan = $("#filter_jurusan").val();
 		$("#kelas_tujuan").html("");
 		$("#previewSiswa").html("");
 		$.ajax({
 			type: 'GET',
 			url: '<?php echo base_url('naik_kelas/combobox_kelas_asal'); ?>',
-			data: { kd_jurusan: jurusan },
 			success: function (html) {
 				$("#kelas_asal").html(html);
 				var preselectAsal = <?php echo json_encode($asal ?? ''); ?>;

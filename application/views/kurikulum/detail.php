@@ -13,13 +13,6 @@
             
                 <table class="table table-bordered">
                     <tr>
-                        <td>Jurusan</td>
-                        <td>
-                            <?php echo cmb_dinamis('jurusan', 'tbl_jurusan', 'nama_jurusan', 'kd_jurusan', null, "id='filter_jurusan' onChange='loadData()'") 
-                            ?>        
-                        </td>
-                    </tr>
-                    <tr>
                         <td>Tingkatan Kelas</td>
                         <td>
                             <?php echo cmb_dinamis('tingkatan_kelas', 'tbl_tingkatan_kelas', 'nama_tingkatan', 'kd_tingkatan', null, "id='filter_tingkatan' onChange='loadData()'") 
@@ -84,11 +77,10 @@
     function loadData()
     {
         var tingkatan_kelas = $("#filter_tingkatan").val();
-        var jurusan         = $("#filter_jurusan").val();
         $.ajax({
             type    : 'GET',
             url     : '<?php echo base_url() ?>kurikulum/dataKurikulumDetail',
-            data    : 'kd_jurusan='+jurusan+'&kd_tingkatan='+tingkatan_kelas+'&kurikulumnya=<?php echo $this->uri->segment(3) ?>',
+            data    : 'kd_tingkatan='+tingkatan_kelas+'&kurikulumnya=<?php echo $this->uri->segment(3) ?>',
             success : function(html) {
                 $("#table_daftarpelajaran").html(html);
             }

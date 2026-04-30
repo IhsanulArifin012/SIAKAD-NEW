@@ -38,18 +38,8 @@ class Naik_kelas extends CI_Controller
 			return;
 		}
 
-		$jurusan = $this->input->get('kd_jurusan', TRUE);
 		$html = "<select id='cbkelas_asal' class='form-control' onchange='loadTujuan()'>";
 
-		if (empty($jurusan))
-		{
-			$html .= "<option value=''>-- Pilih Jurusan --</option>";
-			$html .= "</select>";
-			echo $html;
-			return;
-		}
-
-		$this->db->where('kd_jurusan', $jurusan);
 		$this->db->order_by('kd_tingkatan', 'ASC');
 		$this->db->order_by('kd_kelas', 'ASC');
 		$kelas = $this->db->get('tbl_kelas')->result();
@@ -92,16 +82,14 @@ class Naik_kelas extends CI_Controller
 
 		$tingkatanAsal = (int) ($asal['kd_tingkatan'] ?? 0);
 		$tingkatanTujuan = (string) ($tingkatanAsal + 1);
-		$kdJurusan = $asal['kd_jurusan'] ?? '';
 
-		$this->db->where('kd_jurusan', $kdJurusan);
 		$this->db->where('kd_tingkatan', $tingkatanTujuan);
 		$this->db->order_by('kd_kelas', 'ASC');
 		$tujuan = $this->db->get('tbl_kelas')->result();
 
 		if (empty($tujuan))
 		{
-			$html .= "<option value=''>Tidak ada kelas tujuan (tingkatan berikutnya) untuk jurusan ini</option>";
+			$html .= "<option value=''>Tidak ada kelas tujuan (tingkatan berikutnya)</option>";
 			$html .= "</select>";
 			echo $html;
 			return;
