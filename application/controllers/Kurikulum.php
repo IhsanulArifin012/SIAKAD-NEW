@@ -104,7 +104,6 @@ class Kurikulum extends CI_Controller
 
     function dataKurikulumDetail()
     {
-        $jurusan = $_GET['kd_jurusan'];
         $kode_tingkatan = $_GET['kd_tingkatan'];
         $kurikulum = $_GET['kurikulumnya'];
 
@@ -122,8 +121,7 @@ class Kurikulum extends CI_Controller
                 tm.kd_mapel, tm.nama_mapel
                 FROM tbl_kurikulum_detail tkd
                 JOIN tbl_mapel tm ON tkd.kd_mapel = tm.kd_mapel
-                WHERE tkd.kd_jurusan='$jurusan'
-                AND tkd.kd_tingkatan=$kode_tingkatan
+                WHERE tkd.kd_tingkatan=$kode_tingkatan
                 AND tkd.id_kurikulum=$kurikulum";
 
         $data = $this->db->query($sql)->result();

@@ -21,44 +21,44 @@
 		// karena terlalu panjang, harus menggunakan foreach lagi dan menurut saya sepertinya 
 		//tidak bisa melakukan foreach di datatable, maka saya menggunaka create view kita bisa membuat query tersebut menjadi sebuah table
 
-			// nama table
-			$table      = 'view_walikelas';
-			// nama PK
-			$primaryKey = 'id_walikelas';
-			// list field yang mau ditampilkan
-			$columns    = array(
-				//tabel db(kolom di database) => dt(nama datatable di view)
-				array('db' => 'nama_kelas', 'dt' => 'nama_kelas'),
-		        array('db' => 'nama_jurusan', 'dt' => 'nama_jurusan'),
-		        array('db' => 'nama_tingkatan', 'dt' => 'nama_tingkatan'),
-		        // menampilkan combobox berisi guru
-		        array(
-		        	 'db' => 'id_walikelas', 
-		        	 'dt' => 'nama_guru',
-		        	 'formatter' => function ($d) {
-		        	 	$walikelas = $this->db->get_where('tbl_walikelas',array('id_walikelas'=>$d))->row_array();
+// nama table
+		$table      = 'view_walikelas';
+		// nama PK
+		$primaryKey = 'id_walikelas';
+		// list field yang mau ditampilkan
+		$columns    = array(
+			//tabel db(kolom di database) => dt(nama datatable di view)
+			array('db' => 'nama_kelas', 'dt' => 'nama_kelas'),
+	        array('db' => 'nama_jurusan', 'dt' => 'nama_jurusan'),
+	        array('db' => 'nama_tingkatan', 'dt' => 'nama_tingkatan'),
+	        // menampilkan combobox berisi guru
+	        array(
+				 'db' => 'id_walikelas', 
+				 'dt' => 'nama_guru',
+				 'formatter' => function ($d) {
+				 	$walikelas = $this->db->get_where('tbl_walikelas',array('id_walikelas'=>$d))->row_array();
 
-	                  	return cmb_dinamis('guru', 'tbl_guru', 'nama_guru', 'id_guru', $walikelas['id_guru'], "id='guru$d' onchange='updateWalikelas($d)'");
-		        	 }
-		        	),
-		    );
+					return cmb_dinamis('guru', 'tbl_guru', 'nama_guru', 'id_guru', $walikelas['id_guru'], "id='guru$d' onchange='updateWalikelas($d)'");
+				 }
+			),
+		);
 
-			$sql_details = array(
-				'user' => $this->db->username,
-				'pass' => $this->db->password,
-				'db'   => $this->db->database,
-				'host' => $this->db->hostname
-		    );
+		$sql_details = array(
+			'user' => $this->db->username,
+			'pass' => $this->db->password,
+			'db'   => $this->db->database,
+			'host' => $this->db->hostname
+	    );
 
-			// mengambil nilai tahun akdemik berdasarakn tahun akademik aktif menggunkan helper get_tahun_akademik()
-		    $where = "tahun_akademik='".get_tahun_akademik('tahun_akademik')."'";
+		// mengambil nilai tahun akdemik berdasarakn tahun akademik aktif menggunkan helper get_tahun_akademik()
+	    $where = "tahun_akademik='".get_tahun_akademik('tahun_akademik')."'";
 
-		    // karena memasukan parameter $where maka meggunakan ssp::complex bukan yang simple lagi
-		    $this->output
-		    	->set_content_type('application/json', 'utf-8')
-		    	->set_output(json_encode(
-		    		SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, $where)
-		    	));
+	    // karena memasukan parameter $where maka meggunakan ssp::complex bukan yang simple lagi
+	    $this->output
+	    	->set_content_type('application/json', 'utf-8')
+	    	->set_output(json_encode(
+	    		SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, $where)
+	    	));
 
 		}
 

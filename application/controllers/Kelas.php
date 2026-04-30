@@ -107,7 +107,9 @@
 			$jurusan = $_GET['kd_jurusan'];
 			echo "<select id='cbkelas' name='kelas' class='form-control' onChange='loadSiswa()'>";
 
-			$this->db->where('kd_jurusan', $jurusan);
+			if (!empty($jurusan)) {
+				$this->db->where('kd_jurusan', $jurusan);
+			}
 			$kelas = $this->db->get('tbl_kelas');
 			foreach ($kelas->result() as $row) {
 				echo "<option value='$row->kd_kelas' onChange='loadSiswa()'>$row->nama_kelas</option>";

@@ -36,7 +36,7 @@
                 <thead>
                     <tr>
                         <th>NO</th>
-                        <th>Jurusan &amp; Tingkatan</th>
+                        <th>Tingkatan</th>
                         <th>MATA PELAJARAN</th>
                         <th>HARI</th>
                         <th>JAM</th>
@@ -50,7 +50,7 @@
                     foreach ($jadwal->result() as $row) {
                       echo "<tr>
     <td>$no</td>
-    <td>Jurusan $row->nama_jurusan $row->nama_tingkatan</td>
+    <td> $row->nama_tingkatan</td>
     <td>$row->nama_mapel</td>
     <td>$row->hari</td>
     <td>$row->jam</td>
