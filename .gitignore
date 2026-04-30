@@ -3,6 +3,7 @@ application/config/database.php
 
 # File script dengan kredensial database
 check_db.php
+!check_db.php.example
 
 # File upload
 uploads/*
