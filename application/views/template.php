@@ -443,7 +443,7 @@ echo "<li class='$is_active'>".anchor($main->link,"<i class='".$main->icon."'></
 	}
 ?>
 
-<?php echo $contents; ?>
+<?php echo isset($contents) ? $contents : ''; ?>
 
 </div>
 

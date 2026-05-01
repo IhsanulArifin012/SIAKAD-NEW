@@ -70,6 +70,7 @@
 		{
 			 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$this->model_kelas->save();
+				$this->session->set_flashdata('success', 'Data kelas berhasil ditambahkan.');
 				redirect('kelas');
 			} else {
 				$this->template->load('template', 'kelas/add');
@@ -80,6 +81,7 @@
 		{
 			 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$this->model_kelas->update();
+				$this->session->set_flashdata('success', 'Data kelas berhasil diupdate.');
 				redirect('kelas');
 			} else {
 				$kd_kelas 		= $this->uri->segment(3);
@@ -94,6 +96,7 @@
 			if (!empty($kode_kelas)) {
 				$this->db->where('kd_kelas', $kode_kelas);
 				$this->db->delete('tbl_kelas');
+				$this->session->set_flashdata('success', 'Data kelas berhasil dihapus.');
 			}
 			redirect('kelas');
 		}
