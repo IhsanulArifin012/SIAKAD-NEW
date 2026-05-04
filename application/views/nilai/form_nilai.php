@@ -68,11 +68,6 @@
         <input type='number' id='nilai".$row->nim."' 
         value='".check_nilai($row->nim, $this->uri->segment(3))."' 
         class='form-control'>
-
-        <button class='btn btn-success btn-xs btn-simpan-nilai mt-1' 
-            data-nim='".$row->nim."'>
-            Simpan
-        </button>
     </td>
 </tr>";
                         }
@@ -87,9 +82,19 @@
           <!-- /.box -->
         </div>
         <!-- /.col -->
+
+        <div class="col-sm-12 text-right" style="margin-top: 20px;">
+            <button type="button" id="btn-simpan-semua" class="btn btn-primary btn-sm">Simpan Semua Nilai</button>
+            <button type="button" onclick="window.location.href='<?php echo base_url('nilai'); ?>'" class="btn btn-danger btn-sm" style="margin-left: 10px;">Kembali</button>
+        </div>
+
     </div>
     <!-- /.row -->
 </section>
+
+<!-- SweetAlert2 Offline -->
+<link rel="stylesheet" href="<?php echo base_url('assets/sweetalert2/sweetalert2.min.css'); ?>">
+<script src="<?php echo base_url('assets/sweetalert2/sweetalert2.min.js'); ?>"></script>
 
 <!-- onKeyUp='updateNilai(\"$row->nim\")' -->
 <!-- untuk memberikan parameter string di javascript harus diikuti dengan \" \" -->
@@ -110,32 +115,48 @@
 </script>
 
 <script>
-$(document).on('click', '.btn-simpan-nilai', function(){
-
-    let nim = $(this).data('nim');
-    let nilai = $("#nilai"+nim).val();
+$(document).on('click', '#btn-simpan-semua', function(){
 
     Swal.fire({
-        title: 'Simpan nilai?',
-        text: 'Nilai akan disimpan',
+        title: 'Simpan semua nilai?',
+        text: 'Semua nilai siswa akan disimpan',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Ya, simpan',
+        confirmButtonText: 'Ya, simpan semua',
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
 
-            $.ajax({
-                type: 'GET',
-                url: '<?php echo base_url(); ?>nilai/update_nilai',
-                data: {
-                    nim: nim,
-                    id_jadwal: <?php echo $this->uri->segment(3); ?>,
-                    nilai: nilai
-                },
-                success: function(){
-                    Swal.fire('Berhasil', 'Nilai disimpan', 'success');
-                }
+            // Array siswa dari PHP
+            let siswa = <?php echo json_encode($siswa); ?>;
+            let id_jadwal = <?php echo $this->uri->segment(3); ?>;
+            let total = siswa.length;
+            let successCount = 0;
+
+            siswa.forEach(function(row) {
+                let nim = row.nim;
+                let nilai = $("#nilai" + nim).val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: '<?php echo base_url(); ?>nilai/update_nilai',
+                    data: {
+                        nim: nim,
+                        id_jadwal: id_jadwal,
+                        nilai: nilai
+                    },
+                    success: function(response) {
+                        successCount++;
+                        if (successCount === total) {
+                            Swal.fire('Berhasil', 'Semua nilai telah disimpan', 'success').then(() => {
+                                window.location.href = '<?php echo base_url("nilai"); ?>';
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Terjadi kesalahan saat menyimpan nilai', 'error');
+                    }
+                });
             });
 
         }

@@ -1,0 +1,294 @@
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Versi server:                 8.0.45 - MySQL Community Server - GPL
+-- OS Server:                    Win64
+-- HeidiSQL Versi:               12.15.0.7171
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+-- Membuang struktur basisdata untuk sekolahh
+CREATE DATABASE IF NOT EXISTS `sekolahh` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `sekolahh`;
+
+-- membuang struktur untuk table sekolahh.tabel_menu
+CREATE TABLE IF NOT EXISTS `tabel_menu` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nama_menu` varchar(50) NOT NULL,
+  `link` varchar(50) NOT NULL,
+  `icon` varchar(25) NOT NULL,
+  `is_main_menu` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_agama
+CREATE TABLE IF NOT EXISTS `tbl_agama` (
+  `kd_agama` int NOT NULL,
+  `nama_agama` varchar(30) NOT NULL,
+  PRIMARY KEY (`kd_agama`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_guru
+CREATE TABLE IF NOT EXISTS `tbl_guru` (
+  `id_guru` int NOT NULL AUTO_INCREMENT,
+  `nuptk` varchar(11) NOT NULL,
+  `nama_guru` varchar(40) NOT NULL,
+  `gender` enum('P','W') NOT NULL,
+  `username` varchar(30) NOT NULL,
+  `password` varchar(40) NOT NULL,
+  PRIMARY KEY (`id_guru`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_jadwal
+CREATE TABLE IF NOT EXISTS `tbl_jadwal` (
+  `id_jadwal` int NOT NULL AUTO_INCREMENT,
+  `id_tahun_akademik` int NOT NULL,
+  `semester` varchar(10) NOT NULL,
+  `kd_jurusan` varchar(5) NOT NULL,
+  `kd_tingkatan` varchar(5) NOT NULL,
+  `kd_kelas` varchar(5) NOT NULL,
+  `kd_mapel` varchar(5) NOT NULL,
+  `id_guru` int NOT NULL,
+  `jam` varchar(30) NOT NULL,
+  `kd_ruangan` varchar(10) NOT NULL,
+  `hari` varchar(10) NOT NULL,
+  PRIMARY KEY (`id_jadwal`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_jurusan
+CREATE TABLE IF NOT EXISTS `tbl_jurusan` (
+  `kd_jurusan` varchar(5) NOT NULL,
+  `nama_jurusan` varchar(30) NOT NULL,
+  PRIMARY KEY (`kd_jurusan`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_kelas
+CREATE TABLE IF NOT EXISTS `tbl_kelas` (
+  `kd_kelas` varchar(5) NOT NULL,
+  `nama_kelas` varchar(30) NOT NULL,
+  `kd_tingkatan` varchar(5) NOT NULL,
+  `kd_jurusan` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`kd_kelas`),
+  KEY `fk_kelas_tingkatan` (`kd_tingkatan`),
+  CONSTRAINT `fk_kelas_tingkatan` FOREIGN KEY (`kd_tingkatan`) REFERENCES `tbl_tingkatan_kelas` (`kd_tingkatan`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_kurikulum
+CREATE TABLE IF NOT EXISTS `tbl_kurikulum` (
+  `id_kurikulum` int NOT NULL AUTO_INCREMENT,
+  `nama_kurikulum` varchar(30) NOT NULL,
+  `is_aktif` enum('Y','N') NOT NULL,
+  PRIMARY KEY (`id_kurikulum`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_kurikulum_detail
+CREATE TABLE IF NOT EXISTS `tbl_kurikulum_detail` (
+  `id_kurikulum_detail` int NOT NULL AUTO_INCREMENT,
+  `id_kurikulum` int NOT NULL,
+  `kd_mapel` varchar(5) NOT NULL,
+  `kd_jurusan` varchar(5) NOT NULL,
+  `kd_tingkatan` varchar(5) NOT NULL,
+  PRIMARY KEY (`id_kurikulum_detail`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_level_user
+CREATE TABLE IF NOT EXISTS `tbl_level_user` (
+  `id_level_user` int NOT NULL AUTO_INCREMENT,
+  `nama_level` varchar(30) NOT NULL,
+  PRIMARY KEY (`id_level_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_mapel
+CREATE TABLE IF NOT EXISTS `tbl_mapel` (
+  `kd_mapel` varchar(5) NOT NULL,
+  `nama_mapel` varchar(30) NOT NULL,
+  PRIMARY KEY (`kd_mapel`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_nilai
+CREATE TABLE IF NOT EXISTS `tbl_nilai` (
+  `id_nilai` int NOT NULL AUTO_INCREMENT,
+  `id_jadwal` int NOT NULL,
+  `nim` varchar(11) NOT NULL,
+  `nilai` int NOT NULL,
+  PRIMARY KEY (`id_nilai`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_riwayat_kelas
+CREATE TABLE IF NOT EXISTS `tbl_riwayat_kelas` (
+  `id_riwayat` int NOT NULL AUTO_INCREMENT,
+  `kd_kelas` varchar(5) NOT NULL,
+  `nim` varchar(11) NOT NULL,
+  `id_tahun_akademik` int NOT NULL,
+  PRIMARY KEY (`id_riwayat`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_ruangan
+CREATE TABLE IF NOT EXISTS `tbl_ruangan` (
+  `kd_ruangan` varchar(10) NOT NULL,
+  `nama_ruangan` varchar(30) NOT NULL,
+  PRIMARY KEY (`kd_ruangan`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_siswa
+CREATE TABLE IF NOT EXISTS `tbl_siswa` (
+  `nim` varchar(11) NOT NULL,
+  `nama` varchar(40) NOT NULL,
+  `gender` enum('L','P') NOT NULL,
+  `tanggal_lahir` date NOT NULL,
+  `tempat_lahir` varchar(30) NOT NULL,
+  `kd_agama` int NOT NULL,
+  `foto` text NOT NULL,
+  `kd_kelas` varchar(5) NOT NULL,
+  PRIMARY KEY (`nim`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_tahun_akademik
+CREATE TABLE IF NOT EXISTS `tbl_tahun_akademik` (
+  `id_tahun_akademik` int NOT NULL AUTO_INCREMENT,
+  `tahun_akademik` varchar(10) NOT NULL,
+  `is_aktif` enum('Y','N') NOT NULL,
+  `semester` varchar(10) NOT NULL,
+  PRIMARY KEY (`id_tahun_akademik`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_tingkatan_kelas
+CREATE TABLE IF NOT EXISTS `tbl_tingkatan_kelas` (
+  `kd_tingkatan` varchar(5) NOT NULL,
+  `nama_tingkatan` varchar(30) NOT NULL,
+  PRIMARY KEY (`kd_tingkatan`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_user
+CREATE TABLE IF NOT EXISTS `tbl_user` (
+  `id_user` int NOT NULL AUTO_INCREMENT,
+  `nama_lengkap` varchar(40) NOT NULL,
+  `username` varchar(30) NOT NULL,
+  `password` varchar(40) NOT NULL,
+  `id_level_user` int NOT NULL,
+  `foto` text NOT NULL,
+  PRIMARY KEY (`id_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_user_rule
+CREATE TABLE IF NOT EXISTS `tbl_user_rule` (
+  `id_rule` int NOT NULL AUTO_INCREMENT,
+  `id_menu` int NOT NULL,
+  `id_level_user` int NOT NULL,
+  PRIMARY KEY (`id_rule`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk table sekolahh.tbl_walikelas
+CREATE TABLE IF NOT EXISTS `tbl_walikelas` (
+  `id_walikelas` int NOT NULL AUTO_INCREMENT,
+  `id_guru` int NOT NULL,
+  `id_tahun_akademik` int NOT NULL,
+  `kd_kelas` varchar(5) NOT NULL,
+  PRIMARY KEY (`id_walikelas`),
+  KEY `fk_walikelas_kelas` (`kd_kelas`),
+  KEY `fk_walikelas_tahun` (`id_tahun_akademik`),
+  CONSTRAINT `fk_walikelas_kelas` FOREIGN KEY (`kd_kelas`) REFERENCES `tbl_kelas` (`kd_kelas`) ON DELETE CASCADE,
+  CONSTRAINT `fk_walikelas_tahun` FOREIGN KEY (`id_tahun_akademik`) REFERENCES `tbl_tahun_akademik` (`id_tahun_akademik`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=latin1;
+
+-- Pengeluaran data tidak dipilih.
+
+-- membuang struktur untuk view sekolahh.view_kelas
+-- Membuat tabel sementara untuk menangani kesalahan ketergantungan VIEW
+CREATE TABLE `view_kelas` (
+	`kd_kelas` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`nama_kelas` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`kd_tingkatan` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`kd_jurusan` VARCHAR(1) NULL COLLATE 'latin1_swedish_ci',
+	`nama_tingkatan` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`nama_jurusan` VARCHAR(1) NULL COLLATE 'latin1_swedish_ci'
+);
+
+-- membuang struktur untuk view sekolahh.view_user
+-- Membuat tabel sementara untuk menangani kesalahan ketergantungan VIEW
+CREATE TABLE `view_user` (
+	`id_user` INT NOT NULL,
+	`nama_lengkap` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`username` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`password` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`id_level_user` INT NOT NULL,
+	`foto` TEXT NOT NULL COLLATE 'latin1_swedish_ci',
+	`nama_level` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci'
+);
+
+-- membuang struktur untuk view sekolahh.view_walikelas
+-- Membuat tabel sementara untuk menangani kesalahan ketergantungan VIEW
+CREATE TABLE `view_walikelas` (
+	`nama_guru` VARCHAR(1) NULL COLLATE 'latin1_swedish_ci',
+	`nama_kelas` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`id_walikelas` INT NOT NULL,
+	`id_tahun_akademik` INT NOT NULL,
+	`nama_jurusan` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`nama_tingkatan` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci',
+	`tahun_akademik` VARCHAR(1) NOT NULL COLLATE 'latin1_swedish_ci'
+);
+
+-- Menghapus tabel sementara dan menciptakan struktur VIEW terakhir
+DROP TABLE IF EXISTS `view_kelas`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_kelas` AS select `tk`.`kd_kelas` AS `kd_kelas`,`tk`.`nama_kelas` AS `nama_kelas`,`tk`.`kd_tingkatan` AS `kd_tingkatan`,`tk`.`kd_jurusan` AS `kd_jurusan`,`ttk`.`nama_tingkatan` AS `nama_tingkatan`,`tj`.`nama_jurusan` AS `nama_jurusan` from ((`tbl_kelas` `tk` join `tbl_tingkatan_kelas` `ttk` on((`tk`.`kd_tingkatan` = `ttk`.`kd_tingkatan`))) left join `tbl_jurusan` `tj` on((`tk`.`kd_jurusan` = `tj`.`kd_jurusan`)))
+;
+
+-- Menghapus tabel sementara dan menciptakan struktur VIEW terakhir
+DROP TABLE IF EXISTS `view_user`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_user` AS select `tu`.`id_user` AS `id_user`,`tu`.`nama_lengkap` AS `nama_lengkap`,`tu`.`username` AS `username`,`tu`.`password` AS `password`,`tu`.`id_level_user` AS `id_level_user`,`tu`.`foto` AS `foto`,`tlu`.`nama_level` AS `nama_level` from (`tbl_user` `tu` join `tbl_level_user` `tlu`) where (`tu`.`id_level_user` = `tlu`.`id_level_user`)
+;
+
+-- Menghapus tabel sementara dan menciptakan struktur VIEW terakhir
+DROP TABLE IF EXISTS `view_walikelas`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_walikelas` AS select `tg`.`nama_guru` AS `nama_guru`,`tk`.`nama_kelas` AS `nama_kelas`,`tw`.`id_walikelas` AS `id_walikelas`,`tw`.`id_tahun_akademik` AS `id_tahun_akademik`,coalesce(`tj`.`nama_jurusan`,'Tidak Ada') AS `nama_jurusan`,coalesce(`ttk`.`nama_tingkatan`,'Tidak Ada') AS `nama_tingkatan`,`tta`.`tahun_akademik` AS `tahun_akademik` from (((((`tbl_walikelas` `tw` join `tbl_kelas` `tk` on((`tw`.`kd_kelas` = `tk`.`kd_kelas`))) left join `tbl_guru` `tg` on((`tw`.`id_guru` = `tg`.`id_guru`))) left join `tbl_jurusan` `tj` on((`tk`.`kd_jurusan` = `tj`.`kd_jurusan`))) left join `tbl_tingkatan_kelas` `ttk` on((`tk`.`kd_tingkatan` = `ttk`.`kd_tingkatan`))) join `tbl_tahun_akademik` `tta` on((`tw`.`id_tahun_akademik` = `tta`.`id_tahun_akademik`)))
+;
+
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

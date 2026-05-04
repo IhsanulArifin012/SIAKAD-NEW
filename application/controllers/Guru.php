@@ -8,6 +8,7 @@
       parent::__construct();
       checkAksesModule();
       $this->load->library('ssp');
+      $this->load->library('form_validation');
       $this->load->model('model_guru');
     }
 
@@ -70,6 +71,30 @@
     function add()
     {
      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Set validation rules
+        $this->form_validation->set_rules('nuptk', 'NUPTK', 'required');
+        $this->form_validation->set_rules('nama_guru', 'Nama Guru', 'required');
+        $this->form_validation->set_rules('gender', 'Gender', 'required');
+        $this->form_validation->set_rules('username', 'Username', 'required');
+        $this->form_validation->set_rules('password', 'Password', 'required');
+        
+        // Set custom error message
+        $this->form_validation->set_message('required', '{field} tidak boleh kosong!');
+        
+        if ($this->form_validation->run() === FALSE) {
+          $this->session->set_flashdata('error', 'Data tidak boleh kosong');
+          redirect('guru/add');
+        }
+        
+        $nuptk = $this->input->post('nuptk', true);
+        
+        // Cek apakah NUPTK sudah ada
+        $cek = $this->db->get_where('tbl_guru', ['nuptk' => $nuptk])->row();
+        if ($cek) {
+          $this->session->set_flashdata('error', 'NUPTK sudah terdaftar!');
+          redirect('guru/add');
+        }
+        
         $this->model_guru->save();
         $this->session->set_flashdata('success', 'Data guru berhasil ditambahkan.');
         redirect('guru');

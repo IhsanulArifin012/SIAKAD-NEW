@@ -60,7 +60,7 @@
                       <label class="col-sm-2 control-label"></label>
 
                       <div class="col-sm-1">
-                       <button type="button" id="btn-simpan" class="btn btn-primary btn-flat">Simpan</button>
+                       <button type="submit" class="btn btn-primary btn-flat">Simpan</button>
                       </div>
 
                       <div class="col-sm-1">
@@ -81,3 +81,26 @@
     <!-- /.row -->
 </section>
 
+<!-- SweetAlert2 CSS & JS -->
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/sweetalert2/sweetalert2.min.css">
+<script src="<?php echo base_url(); ?>assets/sweetalert2/sweetalert2.min.js"></script>
+
+<script>
+<?php
+    if ($this->session->flashdata('error')): ?>
+    Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: '<?php echo $this->session->flashdata('error'); ?>'
+    });
+<?php endif; ?>
+
+<?php
+    if ($this->session->flashdata('success')): ?>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: '<?php echo $this->session->flashdata('success'); ?>'
+    });
+<?php endif; ?>
+</script>

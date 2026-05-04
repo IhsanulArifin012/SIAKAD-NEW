@@ -117,6 +117,7 @@
 			
 			$this->db->insert('tbl_walikelas', $data);
 			
+			$this->session->set_flashdata('success', 'Data walikelas berhasil disimpan!');
 			redirect('walikelas');
 		}
 

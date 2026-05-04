@@ -9,63 +9,77 @@
 			parent::__construct();
 			checkAksesModule();
 			$this->load->library('ssp');
-			$this->load->model('model_siswa');
+		$this->load->library('form_validation');
+		$this->load->model('model_siswa');
+	}
+
+	function data()
+	{
+		// nama table
+		$table      = 'tbl_siswa';
+		// nama PK
+		$primaryKey = 'nim';
+		// list field yang mau ditampilkan
+		$columns    = array(
+			//tabel db(kolom di database) => dt(nama datatable di view)
+			array('db' => 'foto', 
+				  'dt' => 'foto',
+				  'formatter' => function($d) {
+					  return "<img width='20px' src='".base_url()."/uploads/".$d."'>";
+				  }
+			),
+			array('db' => 'nim', 'dt' => 'nim'),
+	        array('db' => 'nama', 'dt' => 'nama'),
+	        array('db' => 'tempat_lahir', 'dt' => 'tempat_lahir'),
+	        array('db' => 'tanggal_lahir', 'dt' => 'tanggal_lahir'),
+	        //untuk menampilkan aksi(edit/delete dengan parameter nim siswa)
+	        array(
+	              'db' => 'nim',
+	              'dt' => 'aksi',
+	              'formatter' => function($d) {
+	               		return anchor('siswa/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
+	               		'.anchor('siswa/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger btn-hapus" data-placement="top" title="Delete"');
+	            }
+	        )
+	    );
+
+		$sql_details = array(
+			'user' => $this->db->username,
+			'pass' => $this->db->password,
+			'db'   => $this->db->database,
+			'host' => $this->db->hostname
+	    );
+
+	    $this->output
+	    	->set_content_type('application/json', 'utf-8')
+	    	->set_output(json_encode(
+	    		SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns)
+	    	));
 		}
-
-		function data()
-		{
-
-			// nama table
-			$table      = 'tbl_siswa';
-			// nama PK
-			$primaryKey = 'nim';
-			// list field yang mau ditampilkan
-			$columns    = array(
-				//tabel db(kolom di database) => dt(nama datatable di view)
-				array('db' => 'foto', 
-					  'dt' => 'foto',
-					  'formatter' => function($d) {
-					  		return "<img width='20px' src='".base_url()."/uploads/".$d."'>";
-					  }
-				),
-				array('db' => 'nim', 'dt' => 'nim'),
-		        array('db' => 'nama', 'dt' => 'nama'),
-		        array('db' => 'tempat_lahir', 'dt' => 'tempat_lahir'),
-		        array('db' => 'tanggal_lahir', 'dt' => 'tanggal_lahir'),
-		        //untuk menampilkan aksi(edit/delete dengan parameter nim siswa)
-		        array(
-		              'db' => 'nim',
-		              'dt' => 'aksi',
-		              'formatter' => function($d) {
-		               		return anchor('siswa/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
-		               		'.anchor('siswa/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger btn-hapus" data-placement="top" title="Delete"');
-		            }
-		        )
-		    );
-
-			$sql_details = array(
-				'user' => $this->db->username,
-				'pass' => $this->db->password,
-				'db'   => $this->db->database,
-				'host' => $this->db->hostname
-		    );
-
-		    $this->output
-		    	->set_content_type('application/json', 'utf-8')
-		    	->set_output(json_encode(
-		    		SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns)
-		    	));
-
-		}
-
-		function index()
-		{
-			$this->template->load('template', 'siswa/view');
-		}
-
+	function index()
+	{
+		$this->template->load('template', 'siswa/view');
+	}
 		function add()
 		{
 			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+				// Set validation rules
+				$this->form_validation->set_rules('nim', 'NIM', 'required');
+				$this->form_validation->set_rules('nama', 'Nama', 'required');
+				$this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required');
+				$this->form_validation->set_rules('tanggal_lahir', 'Tanggal Lahir', 'required');
+				$this->form_validation->set_rules('gender', 'Gender', 'required');
+				$this->form_validation->set_rules('agama', 'Agama', 'required');
+				$this->form_validation->set_rules('kelas', 'Kelas', 'required');
+				
+				// Set custom error message
+				$this->form_validation->set_message('required', '{field} tidak boleh kosong!');
+				
+				if ($this->form_validation->run() === FALSE) {
+					$this->session->set_flashdata('error', 'Data tidak boleh kosong');
+					redirect('siswa/add');
+				}
+				
 				$nim = $this->input->post('nim', true);
 				
 				// Cek apakah NIM sudah ada
