@@ -15,10 +15,10 @@
                 <div class="box-body">
 
                   <div class="form-group">
-                      <label class="col-sm-2 control-label">NIM</label>
+                      <label class="col-sm-2 control-label">NIS</label>
 
                       <div class="col-sm-9">
-                        <input type="text" name="nim" class="form-control" placeholder="Masukkan NIM">
+                        <input type="text" name="nim" class="form-control" placeholder="Masukkan NIS">
                       </div>
                   </div>
 

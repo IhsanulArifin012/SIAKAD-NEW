@@ -8,6 +8,7 @@ class Tingkatan extends CI_Controller
 		parent::__construct();
 		checkAksesModule();
 		$this->load->library('ssp');
+		$this->load->library('form_validation');
 		$this->load->model('model_tingkatan');
 	}
 
@@ -56,17 +57,25 @@ class Tingkatan extends CI_Controller
 	function add()
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			$kd_tingkatan = $this->input->post('kd_tingkatan', true);
+			$this->form_validation->set_rules('kd_tingkatan', 'Kode Tingkatan', 'required');
+			$this->form_validation->set_rules('nama_tingkatan', 'Nama Tingkatan', 'required');
 
-			$cek = $this->db->get_where('tbl_tingkatan_kelas', ['kd_tingkatan' => $kd_tingkatan])->row();
-			if ($cek) {
-				$this->session->set_flashdata('error', 'Tingkatan kelas sudah terdaftar!');
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error', 'Data tidak boleh kosong');
 				redirect('tingkatan/add');
-			}
+			} else {
+				$kd_tingkatan = $this->input->post('kd_tingkatan', true);
 
-			$this->model_tingkatan->save();
-			$this->session->set_flashdata('success', 'Data berhasil disimpan!');
-			redirect('tingkatan');
+				$cek = $this->db->get_where('tbl_tingkatan_kelas', ['kd_tingkatan' => $kd_tingkatan])->row();
+				if ($cek) {
+					$this->session->set_flashdata('error', 'Tingkatan kelas sudah terdaftar!');
+					redirect('tingkatan/add');
+				}
+
+				$this->model_tingkatan->save();
+				$this->session->set_flashdata('success', 'Data berhasil disimpan!');
+				redirect('tingkatan');
+			}
 		} else {
 			$this->template->load('template', 'tingkatan/add');
 		}
@@ -75,9 +84,17 @@ class Tingkatan extends CI_Controller
 	function edit()
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			$this->model_tingkatan->update();
-			$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
-			redirect('tingkatan');
+			$this->form_validation->set_rules('kd_tingkatan', 'Kode Tingkatan', 'required');
+			$this->form_validation->set_rules('nama_tingkatan', 'Nama Tingkatan', 'required');
+
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error', 'Data tidak boleh kosong');
+				redirect('tingkatan/edit/' . $this->input->post('kd_tingkatan'));
+			} else {
+				$this->model_tingkatan->update();
+				$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
+				redirect('tingkatan');
+			}
 		} else {
 			$kode_tingkatan		= $this->uri->segment(3);
 			$data['tingkatan']	= $this->db->get_where('tbl_tingkatan_kelas', array('kd_tingkatan' => $kode_tingkatan))->row_array();

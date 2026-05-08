@@ -8,6 +8,7 @@ class Tahunakademik extends CI_Controller
 		parent::__construct();
 		checkAksesModule();
 		$this->load->library('ssp');
+		$this->load->library('form_validation');
 		$this->load->model('model_tahunakademik');
 	}
 
@@ -65,24 +66,32 @@ class Tahunakademik extends CI_Controller
 	function add()
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			$tahun_akademik = $this->input->post('tahun_akademik', true);
+			$this->form_validation->set_rules('tahun_akademik', 'Tahun Akademik', 'required');
+			$this->form_validation->set_rules('is_aktif', 'Status Aktif', 'required');
 
-			$cek = $this->db->get_where('tbl_tahun_akademik', ['tahun_akademik' => $tahun_akademik])->row();
-			if ($cek) {
-				$this->session->set_flashdata('error', 'Tahun akademik sudah terdaftar!');
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error', 'Data tidak boleh kosong');
 				redirect('tahunakademik/add');
+			} else {
+				$tahun_akademik = $this->input->post('tahun_akademik', true);
+
+				$cek = $this->db->get_where('tbl_tahun_akademik', ['tahun_akademik' => $tahun_akademik])->row();
+				if ($cek) {
+					$this->session->set_flashdata('error', 'Tahun akademik sudah terdaftar!');
+					redirect('tahunakademik/add');
+				}
+
+				$this->model_tahunakademik->save();
+
+				// untuk mengambil id tahun akdemik terakhir yang diinputkan
+				$idTahunAkademik = $this->db->insert_id();
+
+				$this->load->model('model_walikelas');
+				// insert data dummy walikelas secara otomatis ketika add tahun akademik baru
+				$this->model_walikelas->insert_walikelas($idTahunAkademik);
+				$this->session->set_flashdata('success', 'Data berhasil disimpan!');
+				redirect('tahunakademik');
 			}
-
-			$this->model_tahunakademik->save();
-
-			// untuk mengambil id tahun akdemik terakhir yang diinputkan
-			$idTahunAkademik = $this->db->insert_id();
-
-			$this->load->model('model_walikelas');
-			// insert data dummy walikelas secara otomatis ketika add tahun akademik baru
-			$this->model_walikelas->insert_walikelas($idTahunAkademik);
-			$this->session->set_flashdata('success', 'Data berhasil disimpan!');
-			redirect('tahunakademik');
 		} else {
 			$this->template->load('template', 'tahunakademik/add');
 		}
@@ -91,9 +100,17 @@ class Tahunakademik extends CI_Controller
 	function edit()
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			$this->model_tahunakademik->update();
-			$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
-			redirect('tahunakademik');
+			$this->form_validation->set_rules('tahun_akademik', 'Tahun Akademik', 'required');
+			$this->form_validation->set_rules('is_aktif', 'Status Aktif', 'required');
+
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error', 'Data tidak boleh kosong');
+				redirect('tahunakademik/edit/' . $this->input->post('id_tahun_akademik'));
+			} else {
+				$this->model_tahunakademik->update();
+				$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
+				redirect('tahunakademik');
+			}
 		} else {
 			$id_tahunakademik 		= $this->uri->segment(3);
 			$data['tahunakademik']	= $this->db->get_where('tbl_tahun_akademik', array('id_tahun_akademik' => $id_tahunakademik))->row_array();

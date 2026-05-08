@@ -64,7 +64,7 @@
 		{
 			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				// Set validation rules
-				$this->form_validation->set_rules('nim', 'NIM', 'required');
+				$this->form_validation->set_rules('nim', 'NIS', 'required');
 				$this->form_validation->set_rules('nama', 'Nama', 'required');
 				$this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required');
 				$this->form_validation->set_rules('tanggal_lahir', 'Tanggal Lahir', 'required');
@@ -85,14 +85,14 @@
 				// Cek apakah NIM sudah ada
 				$cek = $this->db->get_where('tbl_siswa', ['nim' => $nim])->row();
 				if ($cek) {
-					$this->session->set_flashdata('error', 'NIM sudah terdaftar!');
-					redirect('siswa/add');
-				}
-				
-				$uploadFoto = $this->upload_foto_siswa();
-				$this->model_siswa->save($uploadFoto);
-				$this->session->set_flashdata('success', 'Data berhasil disimpan!');
-				redirect('siswa');
+				$this->session->set_flashdata('error', 'NIS sudah terdaftar!');
+				redirect('siswa/add');
+			}
+			
+			$uploadFoto = $this->upload_foto_siswa();
+			$this->model_siswa->save($uploadFoto);
+			$this->session->set_flashdata('success', 'Data berhasil disimpan!');
+			redirect('siswa');
 			} else {
 				$this->template->load('template', 'siswa/add');
 			}
@@ -161,7 +161,7 @@
 
 			echo "<table class='table table-striped table-bordered table-hover table-full-width dataTable'>
 					<tr>
-						<th width=100 class='text-center'>NIM</th>
+						<th width=100 class='text-center'>NIS</th>
 						<th>NAMA</th>
 						<th class='text-center'>NILAI</th>
 					</tr>";
@@ -185,9 +185,7 @@
 
 				$this->load->library('CPHP_excel');
 		        $objPHPExcel = new PHPExcel();
-		        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'NIM');
-		        $objPHPExcel->getActiveSheet()->setCellValue('B1', 'SISWA');
-
+	        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'NIS');
 		        $kelas = $this->input->post('kelas', true);
 		        if (empty($kelas)) {
 		        	$kelas = $this->input->post('kd_kelas', true);
@@ -296,11 +294,9 @@
 
 				echo "<table class='table table-striped table-bordered table-hover table-full-width dataTable'>
 						<tr>
-							<th width=100 class='text-center'>NIM</th>
-							<th>NAMA</th>
-						</tr>";
-
-				$this->db->where('kd_kelas', $kelas);
+						<th width=100 class='text-center'>NIS</th>
+						<th>NAMA</th>
+					</tr>";
 				$siswa = $this->db->get('tbl_siswa');
 				foreach ($siswa->result() as $row) {
 					echo "<tr>

@@ -81,3 +81,15 @@
     </div>
     <!-- /.row -->
 </section>
+
+<?php if ($this->session->flashdata('error')): ?>
+<script src="<?php echo base_url('assets/sweetalert2/sweetalert2.min.js'); ?>"></script>
+<link rel="stylesheet" href="<?php echo base_url('assets/sweetalert2/sweetalert2.min.css'); ?>">
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: '<?php echo $this->session->flashdata('error'); ?>'
+});
+</script>
+<?php endif; ?>

@@ -24,7 +24,7 @@
 					<table class="table table-striped table-bordered">
 						<tr>
 							<th class="text-center" width="60">No</th>
-							<th class="text-center" width="120">NIM</th>
+							<th class="text-center" width="120">NIS</th>
 							<th>Nama</th>
 							<th class="text-center" width="160">Aksi</th>
 						</tr>

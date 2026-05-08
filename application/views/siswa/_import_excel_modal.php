@@ -26,7 +26,7 @@
 					<div class="form-group">
 						<label for="importFile">File Excel</label>
 						<input type="file" class="form-control" id="importFile" name="file" accept=".xlsx,.xls" required>
-						<small class="help-block">Kolom wajib: <strong>NIM</strong>, <strong>NAMA</strong>, <strong>KD_KELAS</strong>.</small>
+						<small class="help-block">Kolom wajib: <strong>NIS</strong>, <strong>NAMA</strong>, <strong>KD_KELAS</strong>.</small>
 					</div>
 					<div class="text-right">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>

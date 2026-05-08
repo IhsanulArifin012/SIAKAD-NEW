@@ -8,6 +8,7 @@
 			parent::__construct();
 			checkAksesModule();
 			$this->load->library('ssp');
+			$this->load->library('form_validation');
 			$this->load->model('model_user');
 		}
 
@@ -63,10 +64,25 @@
 		function add()
 		{
 			if (isset($_POST['submit'])) {
-				$uploadFoto = $this->upload_foto_user();
-				$this->model_user->save($uploadFoto);
-				$this->session->set_flashdata('success', 'Data user berhasil disimpan.');
-				redirect('user');
+				$this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'required');
+				$this->form_validation->set_rules('username', 'Username', 'required|callback_check_unique_username_level');
+				$this->form_validation->set_rules('password', 'Password', 'required');
+				$this->form_validation->set_rules('level_user', 'Level User', 'required');
+
+				if ($this->form_validation->run() == FALSE) {
+					$error_msg = validation_errors();
+					if (strpos($error_msg, 'sudah ada') !== false) {
+						$this->session->set_flashdata('error', 'Data tidak valid');
+					} else {
+						$this->session->set_flashdata('error', 'Data tidak boleh kosong');
+					}
+					$this->template->load('template', 'user/add');
+				} else {
+					$uploadFoto = $this->upload_foto_user();
+					$this->model_user->save($uploadFoto);
+					$this->session->set_flashdata('success', 'Data user berhasil disimpan.');
+					redirect('user');
+				}
 			} else {
 				$this->template->load('template', 'user/add');
 			}
@@ -165,27 +181,17 @@
 			}
 		}
 
-		function add_rule()
+		function check_unique_username_level($username)
 		{
-			$level_user	= $_GET['level_user'];
-			$id_menu	= $_GET['id_modul'];
-
-			// $leveluser dan idmenu diambil dari function ajax addRule()
-			$data 		= array(
-					'id_menu' => $id_menu, 
-					'id_level_user' => $level_user );
-
-			// $data untuk menampilkan data yang sesuai
-			$check 		= $this->db->get_where('tbl_user_rule', $data);
-
-			if ($check->num_rows() < 1) {
-				// apabila datanya belum ada (kecil dari 1) maka akan menginsert
-				$this->db->insert('tbl_user_rule', $data);
-			} else {
-				$this->db->where('id_menu', $id_menu);
-				$this->db->where('id_level_user', $level_user);
-				$this->db->delete('tbl_user_rule');
+			$level_user = $this->input->post('level_user');
+			$this->db->where('username', $username);
+			$this->db->where('id_level_user', $level_user);
+			$query = $this->db->get('tbl_user');
+			if ($query->num_rows() > 0) {
+				$this->form_validation->set_message('check_unique_username_level', 'Username dengan level user ini sudah ada.');
+				return FALSE;
 			}
+			return TRUE;
 		}
 
 	}

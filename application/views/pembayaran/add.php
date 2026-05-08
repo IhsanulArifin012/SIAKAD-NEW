@@ -26,15 +26,15 @@
 						</div>
 
 						<div class="form-group">
-							<label class="col-sm-2 control-label">Siswa (NIM)</label>
+							<label class="col-sm-2 control-label">Siswa (NIS)</label>
 							<div class="col-sm-4">
-								<input list="siswaList" name="nim" class="form-control" placeholder="Ketik NIM..." required>
+								<input list="siswaList" name="nim" class="form-control" placeholder="Ketik NIS..." required>
 								<datalist id="siswaList">
 									<?php foreach ($siswa as $s): ?>
 										<option value="<?php echo $s->nim; ?>"><?php echo $s->nim.' - '.$s->nama; ?></option>
 									<?php endforeach; ?>
 								</datalist>
-								<small style="opacity:.8;">Format: NIM - Nama (pilih dari daftar)</small>
+								<small style="opacity:.8;">Format: NIS - Nama (pilih dari daftar)</small>
 							</div>
 						</div>
 

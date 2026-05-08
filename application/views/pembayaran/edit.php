@@ -30,7 +30,7 @@
 						</div>
 
 						<div class="form-group">
-							<label class="col-sm-2 control-label">Siswa (NIM)</label>
+							<label class="col-sm-2 control-label">Siswa (NIS)</label>
 							<div class="col-sm-4">
 								<input list="siswaList" name="nim" class="form-control" value="<?php echo $row['nim']; ?>" required>
 								<datalist id="siswaList">

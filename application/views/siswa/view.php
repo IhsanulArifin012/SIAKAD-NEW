@@ -21,7 +21,7 @@
                     <tr>
                         <th>NO</th>
                         <th>FOTO</th>
-                        <th>NIM</th>
+                        <th>NIS</th>
                         <th>NAMA</th>
                         <th>TEMPAT LAHIR</th>
                         <th>TANGGAL LAHIR</th>

@@ -8,6 +8,7 @@ class Ruangan extends CI_Controller
 		parent::__construct();
 		checkAksesModule();
 		$this->load->library('ssp');
+		$this->load->library('form_validation');
 		$this->load->model('model_ruangan');
 	}
 
@@ -56,18 +57,26 @@ class Ruangan extends CI_Controller
 	function add()
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			$kd_ruangan = $this->input->post('kd_ruangan', true);
+			$this->form_validation->set_rules('kd_ruangan', 'Kode Ruangan', 'required');
+			$this->form_validation->set_rules('nama_ruangan', 'Nama Ruangan', 'required');
 
-			// Cek apakah kd_ruangan sudah ada
-			$cek = $this->db->get_where('tbl_ruangan', ['kd_ruangan' => $kd_ruangan])->row();
-			if ($cek) {
-				$this->session->set_flashdata('error', 'Kode ruangan sudah terdaftar!');
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error', 'Data tidak boleh kosong');
 				redirect('ruangan/add');
-			}
+			} else {
+				$kd_ruangan = $this->input->post('kd_ruangan', true);
 
-			$this->model_ruangan->save();
-			$this->session->set_flashdata('success', 'Data berhasil disimpan!');
-			redirect('ruangan');
+				// Cek apakah kd_ruangan sudah ada
+				$cek = $this->db->get_where('tbl_ruangan', ['kd_ruangan' => $kd_ruangan])->row();
+				if ($cek) {
+					$this->session->set_flashdata('error', 'Kode ruangan sudah terdaftar!');
+					redirect('ruangan/add');
+				}
+
+				$this->model_ruangan->save();
+				$this->session->set_flashdata('success', 'Data berhasil disimpan!');
+				redirect('ruangan');
+			}
 		} else {
 			$this->template->load('template', 'ruangan/add');
 		}
@@ -76,9 +85,17 @@ class Ruangan extends CI_Controller
 	function edit()
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			$this->model_ruangan->update();
-			$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
-			redirect('ruangan');
+			$this->form_validation->set_rules('kd_ruangan', 'Kode Ruangan', 'required');
+			$this->form_validation->set_rules('nama_ruangan', 'Nama Ruangan', 'required');
+
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error', 'Data tidak boleh kosong');
+				redirect('ruangan/edit/' . $this->input->post('kd_ruangan'));
+			} else {
+				$this->model_ruangan->update();
+				$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
+				redirect('ruangan');
+			}
 		} else {
 			$kode_ruangan	 = $this->uri->segment(3);
 			if (empty($kode_ruangan)) {

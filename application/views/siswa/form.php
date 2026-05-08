@@ -54,7 +54,7 @@
       <th colspan='5'>Preview Data</th>
     </tr>
     <tr>
-      <th>NIM</th>
+      <th>NIS</th>
       <th>Nama</th>
       <th>Tanggal Lahir</th>
       <th>Tempat Lahir</th>

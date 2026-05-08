@@ -55,7 +55,7 @@
               <table id="mytable" class="table table-striped table-bordered table-hover table-full-width dataTable" cellspacing="0" width="100%">
                 <thead>
                     <tr>
-                        <th class="text-center" width="100">NIM</th>
+                        <th class="text-center" width="100">NIS</th>
                         <th>NAMA SISWA</th>
                         <th class="text-center">NILAI</th>
                     </tr>

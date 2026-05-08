@@ -53,6 +53,22 @@ body{
     border-right:1px solid #e1e1e1;
 }
 
+.sidebar{
+    display:flex !important;
+    flex-direction:column !important;
+    min-height:calc(100vh - 60px) !important;
+}
+
+.sidebar-menu{
+    flex:1 !important;
+}
+
+.sidebar-footer{
+    padding:15px !important;
+    border-top:1px solid #eaeaea !important;
+    margin-top:auto !important;
+}
+
 .content-wrapper,.main-footer{
     margin-left:260px !important;
 }
@@ -415,6 +431,15 @@ echo "<li class='$is_active'>".anchor($main->link,"<i class='".$main->icon."'></
 ?>
 
 </ul>
+
+<div class="sidebar-footer">
+    <?php echo anchor(
+        'auth/logout',
+        '<i class="fa fa-sign-out"></i> Logout',
+        'class="btn btn-block btn-danger btn-flat"'
+    ); ?>
+</div>
+
 </section>
 </aside>
 
@@ -476,7 +501,14 @@ echo "<li class='$is_active'>".anchor($main->link,"<i class='".$main->icon."'></
 var flashSuccess = <?php echo json_encode($success ?: ''); ?>;
 var flashError = <?php echo json_encode($error ?: ''); ?>;
 if (flashSuccess) {
-    Swal.fire('Berhasil', flashSuccess, 'success');
+    Swal.fire({
+        title: 'Berhasil',
+        text: flashSuccess,
+        icon: 'success',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false
+    });
 }
 if (flashError) {
     Swal.fire('Gagal', flashError, 'error');

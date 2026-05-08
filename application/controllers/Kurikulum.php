@@ -8,6 +8,7 @@ class Kurikulum extends CI_Controller
         parent::__construct();
         checkAksesModule();
         $this->load->library('ssp');
+        $this->load->library('form_validation');
         $this->load->model('model_kurikulum');
     }
 
@@ -57,17 +58,25 @@ class Kurikulum extends CI_Controller
     function add()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nama_kurikulum = $this->input->post('nama_kurikulum', true);
+            $this->form_validation->set_rules('nama_kurikulum', 'Nama Kurikulum', 'required');
+            $this->form_validation->set_rules('is_aktif', 'Status Aktif', 'required');
 
-            $cek = $this->db->get_where('tbl_kurikulum', ['nama_kurikulum' => $nama_kurikulum])->row();
-            if ($cek) {
-                $this->session->set_flashdata('error', 'Kurikulum sudah terdaftar!');
+            if ($this->form_validation->run() == FALSE) {
+                $this->session->set_flashdata('error', 'Data tidak boleh kosong');
                 redirect('kurikulum/add');
-            }
+            } else {
+                $nama_kurikulum = $this->input->post('nama_kurikulum', true);
 
-            $this->model_kurikulum->save();
-            $this->session->set_flashdata('success', 'Data berhasil disimpan!');
-            redirect('kurikulum');
+                $cek = $this->db->get_where('tbl_kurikulum', ['nama_kurikulum' => $nama_kurikulum])->row();
+                if ($cek) {
+                    $this->session->set_flashdata('error', 'Kurikulum sudah terdaftar!');
+                    redirect('kurikulum/add');
+                }
+
+                $this->model_kurikulum->save();
+                $this->session->set_flashdata('success', 'Data berhasil disimpan!');
+                redirect('kurikulum');
+            }
         } else {
             $this->template->load('template', 'kurikulum/add');
         }
@@ -76,9 +85,17 @@ class Kurikulum extends CI_Controller
     function edit()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->model_kurikulum->update();
-            $this->session->set_flashdata('success', 'Data berhasil diperbarui!');
-            redirect('kurikulum');
+            $this->form_validation->set_rules('nama_kurikulum', 'Nama Kurikulum', 'required');
+            $this->form_validation->set_rules('is_aktif', 'Status Aktif', 'required');
+
+            if ($this->form_validation->run() == FALSE) {
+                $this->session->set_flashdata('error', 'Data tidak boleh kosong');
+                redirect('kurikulum/edit/' . $this->input->post('id_kurikulum'));
+            } else {
+                $this->model_kurikulum->update();
+                $this->session->set_flashdata('success', 'Data berhasil diperbarui!');
+                redirect('kurikulum');
+            }
         } else {
             $id_kurikulum = $this->uri->segment(3);
             $data['kurikulum'] = $this->db->get_where('tbl_kurikulum', array('id_kurikulum' => $id_kurikulum))->row_array();

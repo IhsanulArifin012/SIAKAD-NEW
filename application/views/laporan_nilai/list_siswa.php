@@ -33,7 +33,7 @@
 
               <table class="table table-bordered">
                   <tr>
-                      <th class="text-center" width="100">NIM</th>
+                      <th class="text-center" width="100">NIS</th>
                       <th>NAMA</th>
                       <th class="text-center" width="100">AKSI</th>
                   </tr>
