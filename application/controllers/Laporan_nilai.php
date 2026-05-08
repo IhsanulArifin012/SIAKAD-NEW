@@ -29,27 +29,46 @@
 			}
 
 			$kelas 			= "SELECT tk.nama_kelas, tju.nama_jurusan, tm.nama_mapel, ttk.nama_tingkatan 
-							  FROM tbl_jadwal AS tj, tbl_jurusan AS tju,  tbl_kelas AS tk, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-							  WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_kelas = tk.kd_kelas AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.kd_kelas= ".$this->db->escape($walikelas['kd_kelas']);
+							  FROM tbl_jadwal AS tj
+							  JOIN tbl_kelas AS tk ON tj.kd_kelas = tk.kd_kelas
+							  JOIN tbl_mapel AS tm ON tj.kd_mapel = tm.kd_mapel
+							  JOIN tbl_tingkatan_kelas AS ttk ON tj.kd_tingkatan = ttk.kd_tingkatan
+							  LEFT JOIN tbl_jurusan AS tju ON tj.kd_jurusan = tju.kd_jurusan
+							  WHERE tj.kd_kelas = ?";
 			$siswa 			= "SELECT ts.nim, ts.nama
 							  FROM tbl_riwayat_kelas AS trk, tbl_siswa AS ts 
 							  WHERE trk.nim = ts.nim AND trk.kd_kelas = ".$this->db->escape($walikelas['kd_kelas'])." 
 							  AND trk.id_tahun_akademik = ".(int) get_tahun_akademik('id_tahun_akademik');
 
-			$data['kelas']  = $this->db->query($kelas)->row_array();
+			$data['kelas']  = $this->db->query($kelas, array($walikelas['kd_kelas']))->row_array();
 			$data['siswa'] 	= $this->db->query($siswa);
 			$this->template->load('template', 'laporan_nilai/list_siswa', $data);
 		}
 
 
-		function nilai_semester(){
+	    function nilai_semester(){
        		// blok query info siswa
 	       $nim = $this->uri->segment(3);
-	       $sqlSiswa = "SELECT ts.nama as nama_siswa, ts.nim, tj.nama_jurusan, tk.nama_kelas, tk.kd_tingkatan, tk.kd_kelas
-	                    FROM tbl_riwayat_kelas as trk, tbl_siswa as ts, tbl_kelas as tk, tbl_jurusan as tj
-	                    WHERE ts.nim=trk.nim and tk.kd_kelas = trk.kd_kelas and tk.kd_jurusan = tj.kd_jurusan 
-	                    and trk.nim='$nim' and trk.id_tahun_akademik=".get_tahun_akademik('id_tahun_akademik');
-	       $siswa = $this->db->query($sqlSiswa)->row_array();
+
+	       if (empty($nim)) {
+	           $this->session->set_flashdata('error', 'Data siswa tidak ditemukan.');
+	           redirect('laporan_nilai');
+	           return;
+	       }
+
+	       $sqlSiswa = "SELECT ts.nama as nama_siswa, ts.nim, tju.nama_jurusan, tk.nama_kelas, tk.kd_tingkatan, tk.kd_kelas
+	                    FROM tbl_riwayat_kelas as trk
+	                    JOIN tbl_siswa as ts ON ts.nim = trk.nim
+	                    JOIN tbl_kelas as tk ON tk.kd_kelas = trk.kd_kelas
+	                    LEFT JOIN tbl_jurusan as tju ON tk.kd_jurusan = tju.kd_jurusan
+	                    WHERE trk.nim = ? AND trk.id_tahun_akademik = ?";
+	       $siswa = $this->db->query($sqlSiswa, array($nim, get_tahun_akademik('id_tahun_akademik')))->row_array();
+
+	       if (empty($siswa)) {
+	           $this->session->set_flashdata('error', 'Data siswa pada tahun akademik aktif tidak ditemukan.');
+	           redirect('laporan_nilai');
+	           return;
+	       }
 	       
 	        $this->load->library('CFPDF');
 	        $pdf = new FPDF('P','mm','A4');
@@ -75,10 +94,8 @@
 	        $pdf->Cell(30,5,'TAHUN AJARAN',0,0,'L');
 	        $pdf->Cell(40,5,': '.  get_tahun_akademik('tahun_akademik'),0,1,'L');
 	        
-	        $pdf->Cell(30,5,'JURUSAN',0,0,'L');
-	        $pdf->Cell(88,5,': '.$siswa['nama_jurusan'],0,0,'L');
 	        $pdf->Cell(30,5,'SEMESTER',0,0,'L');
-	        $pdf->Cell(40,5,': '.  get_tahun_akademik('semester'),0,1,'L');
+	        $pdf->Cell(160,5,': '.  get_tahun_akademik('semester'),0,1,'L');
 	        
 	        // END BLOCK INFO SISWA
 	        
@@ -94,10 +111,11 @@
 	        $pdf->Cell(20,5,'Rata Kelas',1,0,'L');
 	        $pdf->Cell(37,5,'Deskripsi Kemampuan',1,1,'L');
 	        $pdf->SetFont('Arial','',9);
-	        $sqlMapel = "SELECT tj.id_jadwal,tm.nama_mapel 
-	                    FROM tbl_jadwal as tj,tbl_mapel as tm
-	                    WHERE tj.kd_mapel=tm.kd_mapel and tj.kd_tingkatan=".$siswa['kd_tingkatan']." and tj.kd_kelas='".$siswa['kd_kelas']."'";
-	        $mapel = $this->db->query($sqlMapel)->result();
+	        $sqlMapel = "SELECT tj.id_jadwal, tm.nama_mapel 
+	                    FROM tbl_jadwal as tj
+	                    JOIN tbl_mapel as tm ON tj.kd_mapel = tm.kd_mapel
+	                    WHERE tj.kd_tingkatan = ? AND tj.kd_kelas = ?";
+	        $mapel = $this->db->query($sqlMapel, array($siswa['kd_tingkatan'], $siswa['kd_kelas']))->result();
 	        $no=1;
 	        foreach ($mapel as $m){
 	            $pdf->Cell(8,5,$no,1,0,'L');

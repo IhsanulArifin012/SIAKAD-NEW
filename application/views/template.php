@@ -16,6 +16,79 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/dist/css/skins/_all-skins.min.css">
 
 <script src="<?php echo base_url(); ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/sweetalert2/sweetalert2.min.css">
+<script>
+(function () {
+    var currentSwal;
+    var notificationIcons = { success: true, error: true, warning: true, info: true };
+
+    function isPlainOptions(value) {
+        return value && typeof value === 'object' && !Array.isArray(value);
+    }
+
+    function withTimedNotificationDefaults(options) {
+        if (!isPlainOptions(options)) {
+            return options;
+        }
+
+        if (!notificationIcons[options.icon] || options.showCancelButton || options.input || options.toast) {
+            return options;
+        }
+
+        var nextOptions = $.extend({}, options);
+        nextOptions.timer = 2000;
+        nextOptions.timerProgressBar = true;
+        nextOptions.showConfirmButton = true;
+        nextOptions.confirmButtonText = nextOptions.confirmButtonText || 'OK';
+
+        return nextOptions;
+    }
+
+    function wrapSwal(Swal) {
+        if (!Swal || Swal.__siakadTimedNotification) {
+            return Swal;
+        }
+
+        var originalFire = Swal.fire.bind(Swal);
+        Swal.fire = function () {
+            var args = Array.prototype.slice.call(arguments);
+
+            if (isPlainOptions(args[0])) {
+                args[0] = withTimedNotificationDefaults(args[0]);
+            } else if (notificationIcons[args[2]]) {
+                args = [withTimedNotificationDefaults({
+                    title: args[0],
+                    text: args[1],
+                    icon: args[2]
+                })];
+            }
+
+            return originalFire.apply(Swal, args);
+        };
+        Swal.__siakadTimedNotification = true;
+
+        return Swal;
+    }
+
+    Object.defineProperty(window, 'Swal', {
+        configurable: true,
+        get: function () {
+            return currentSwal;
+        },
+        set: function (value) {
+            currentSwal = wrapSwal(value);
+        }
+    });
+
+    window.SiakadWrapSwal = wrapSwal;
+})();
+</script>
+<script src="<?php echo base_url(); ?>assets/sweetalert2/sweetalert2.min.js"></script>
+<script>
+if (window.SiakadWrapSwal && window.Swal) {
+    window.Swal = window.SiakadWrapSwal(window.Swal);
+}
+</script>
 
 <!-- Google Fonts removed to avoid external stylesheet load failures in offline/blocked environments -->
 
@@ -482,17 +555,13 @@ echo "<li class='$is_active'>".anchor($main->link,"<i class='".$main->icon."'></
 
 <script src="<?php echo base_url(); ?>assets/dist/js/adminlte.min.js"></script>
 
-<!-- SweetAlert2 Offline -->
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/sweetalert2/sweetalert2.min.css">
-<script src="<?php echo base_url(); ?>assets/sweetalert2/sweetalert2.min.js"></script>
-
 <script>
   $(function () {
     window.setTimeout(function () {
       $('.alert').not('.alert-important').fadeTo(300, 0).slideUp(300, function () {
         $(this).remove();
       });
-    }, 10000);
+    }, 2000);
   });
 </script>
 
@@ -504,10 +573,7 @@ if (flashSuccess) {
     Swal.fire({
         title: 'Berhasil',
         text: flashSuccess,
-        icon: 'success',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false
+        icon: 'success'
     });
 }
 if (flashError) {

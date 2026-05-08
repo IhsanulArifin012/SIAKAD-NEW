@@ -37,8 +37,7 @@
 
             <div class="col-sm-5">
               <?php
-              // echo form_dropdown('is_aktif', array('Pilih Status', 'N'=>'Tidak Aktif', 'Y'=>'Aktif'), $tahunakademik['is_aktif'], "class='form-control'");
-              echo form_dropdown('semester', array('Pilih Semester', 'ganjil' => 'Ganjil', 'genap' => 'Genap'), NULL, "class='form-control' disabled='disabled'");
+              echo form_dropdown('is_aktif', array('Pilih Status', 'N'=>'Tidak Aktif', 'Y'=>'Aktif'), $tahunakademik['is_aktif'], "class='form-control'");
               ?>
             </div>
           </div>

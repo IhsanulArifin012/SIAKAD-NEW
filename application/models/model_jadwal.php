@@ -35,6 +35,12 @@ function generateJadwal($kdTingkatan = null)
 			// Ambil tahun akademik yang aktif
 			$tahunakademik 	 = $this->db->get_where('tbl_tahun_akademik', array('is_aktif' => 'Y'))->row_array();
 
+			// Cek apakah tahun akademik aktif ditemukan
+			if (empty($tahunakademik)) {
+				log_message('error', 'Generate jadwal gagal: Tidak ada tahun akademik yang aktif.');
+				return false;
+			}
+
 			foreach ($kurikulumDetail->result() as $row) {
 
 				// ambil kelas berdasarkan tingkatan
@@ -56,6 +62,8 @@ function generateJadwal($kdTingkatan = null)
 				}
 
 			}
+
+			return true;
 	 	}
 
 	}

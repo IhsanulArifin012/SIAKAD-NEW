@@ -12,18 +12,36 @@
 		function index()
 		{
 			$idGuru = (int) $this->session->userdata('id_guru');
-			$sql = "SELECT tj.kd_kelas, tj.id_jadwal, tju.nama_jurusan, ttk.nama_tingkatan, tm.nama_mapel, tj.jam, 
-					tr.nama_ruangan, tj.hari, tj.semester 
-					FROM tbl_jadwal AS tj, tbl_jurusan AS tju, tbl_ruangan AS tr, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-					WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.id_guru = ".$idGuru;
-			$data['jadwal'] =$this->db->query($sql);
+			$sql = "SELECT tj.kd_kelas, tj.id_jadwal, tju.nama_jurusan, ttk.nama_tingkatan, tk.nama_kelas, tm.nama_mapel, tj.jam, 
+				tr.nama_ruangan, tj.hari, tj.semester 
+				FROM tbl_jadwal AS tj
+				JOIN tbl_kelas AS tk ON tj.kd_kelas = tk.kd_kelas
+				JOIN tbl_mapel AS tm ON tj.kd_mapel = tm.kd_mapel
+				JOIN tbl_tingkatan_kelas AS ttk ON tj.kd_tingkatan = ttk.kd_tingkatan
+				LEFT JOIN tbl_jurusan AS tju ON tj.kd_jurusan = tju.kd_jurusan
+				LEFT JOIN tbl_ruangan AS tr ON tj.kd_ruangan = tr.kd_ruangan
+				WHERE tj.id_guru = ?";
+			$data['jadwal'] =$this->db->query($sql, array($idGuru));
 			$this->template->load('template', 'nilai/list_kelas', $data);
 		}
 
 		function kelas()
 		{
-			$id_jadwal		= $this->uri->segment(3);
-			$jadwal 		= $this->db->get_where('tbl_jadwal', array('id_jadwal' => $id_jadwal))->row_array();
+			$id_jadwal		= (int) $this->uri->segment(3);
+
+			if ($id_jadwal <= 0) {
+				$this->session->set_flashdata('error', 'Data jadwal tidak ditemukan.');
+				redirect('nilai');
+			}
+
+			$idGuru 		= (int) $this->session->userdata('id_guru');
+			$jadwal 		= $this->db->get_where('tbl_jadwal', array('id_jadwal' => $id_jadwal, 'id_guru' => $idGuru))->row_array();
+
+			if (empty($jadwal)) {
+				$this->session->set_flashdata('error', 'Data jadwal tidak ditemukan.');
+				redirect('nilai');
+			}
+
 			$kd_kelas 		= $jadwal['kd_kelas'];
 			// $kelas 			= "SELECT tk.*, tj.nama_jurusan, ttk.nama_tingkatan 
 			// 		  		  FROM tbl_kelas AS tk, tbl_jurusan AS tj, tbl_tingkatan_kelas AS ttk
@@ -37,13 +55,24 @@
    			//                 and j.id_jadwal=13='$id_rombel'";
 			
 			$kelas 			= "SELECT tk.nama_kelas, tju.nama_jurusan, tm.nama_mapel, ttk.nama_tingkatan 
-							  FROM tbl_jadwal AS tj, tbl_jurusan AS tju,  tbl_kelas AS tk, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-							  WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_kelas = tk.kd_kelas AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.id_jadwal = $id_jadwal";
+							  FROM tbl_jadwal AS tj
+							  JOIN tbl_kelas AS tk ON tj.kd_kelas = tk.kd_kelas
+							  JOIN tbl_mapel AS tm ON tj.kd_mapel = tm.kd_mapel
+							  JOIN tbl_tingkatan_kelas AS ttk ON tj.kd_tingkatan = ttk.kd_tingkatan
+							  LEFT JOIN tbl_jurusan AS tju ON tj.kd_jurusan = tju.kd_jurusan
+							  WHERE tj.id_jadwal = ?";
 			$siswa 			= "SELECT ts.nim, ts.nama 
-							  FROM tbl_riwayat_kelas AS trk, tbl_siswa AS ts 
-							  WHERE trk.nim = ts.nim AND trk.kd_kelas = '$kd_kelas' AND trk.id_tahun_akademik =". get_tahun_akademik('id_tahun_akademik') ." ";
-			$data['kelas']  = $this->db->query($kelas)->row_array();
-			$data['siswa']  = $this->db->query($siswa)->result();
+							  FROM tbl_riwayat_kelas AS trk
+							  JOIN tbl_siswa AS ts ON trk.nim = ts.nim
+							  WHERE trk.kd_kelas = ? AND trk.id_tahun_akademik = ?";
+			$data['kelas']  = $this->db->query($kelas, array($id_jadwal))->row_array();
+
+			if (empty($data['kelas'])) {
+				$this->session->set_flashdata('error', 'Detail kelas pada jadwal tidak ditemukan.');
+				redirect('nilai');
+			}
+
+			$data['siswa']  = $this->db->query($siswa, array($kd_kelas, get_tahun_akademik('id_tahun_akademik')))->result();
 			$this->template->load('template', 'nilai/form_nilai', $data);
 		}
 

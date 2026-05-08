@@ -105,7 +105,7 @@ class Tahunakademik extends CI_Controller
 
 			if ($this->form_validation->run() == FALSE) {
 				$this->session->set_flashdata('error', 'Data tidak boleh kosong');
-				redirect('tahunakademik/edit/' . $this->input->post('id_tahun_akademik'));
+				redirect('tahunakademik/edit/' . $this->input->post('id_tahunakademik'));
 			} else {
 				$this->model_tahunakademik->update();
 				$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
@@ -113,7 +113,19 @@ class Tahunakademik extends CI_Controller
 			}
 		} else {
 			$id_tahunakademik 		= $this->uri->segment(3);
+
+			if (empty($id_tahunakademik)) {
+				$this->session->set_flashdata('error', 'Data tahun akademik tidak ditemukan!');
+				redirect('tahunakademik');
+			}
+
 			$data['tahunakademik']	= $this->db->get_where('tbl_tahun_akademik', array('id_tahun_akademik' => $id_tahunakademik))->row_array();
+
+			if (empty($data['tahunakademik'])) {
+				$this->session->set_flashdata('error', 'Data tahun akademik tidak ditemukan!');
+				redirect('tahunakademik');
+			}
+
 			$this->template->load('template', 'tahunakademik/edit', $data);
 		}
 	}

@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 	class Mapel extends CI_Controller
 	{

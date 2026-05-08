@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="<?php echo base_url('assets/bower_components/bootstrap/dist/css/bootstrap.min.css'); ?>">
     <link rel="stylesheet" href="<?php echo base_url('assets/bower_components/font-awesome/css/font-awesome.min.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('assets/sweetalert2/sweetalert2.min.css'); ?>">
     <!-- Google Fonts removed to avoid external stylesheet load failures in offline/blocked environments -->
 
     <style>
@@ -159,18 +160,6 @@
         if ($flashSuccess) { $this->session->unset_userdata('success'); }
     ?>
 
-    <?php if($flashError): ?>
-        <div class="alert-login" id="alertFlash" role="alert" aria-live="polite">
-            <i class="fa fa-exclamation-triangle"></i>
-            <?php echo htmlspecialchars($flashError, ENT_QUOTES, 'UTF-8'); ?>
-        </div>
-    <?php elseif($flashSuccess): ?>
-        <div class="alert-login" id="alertFlash" role="alert" aria-live="polite" style="background:rgba(40,167,69,.18);border-color:rgba(40,167,69,.5);color:#d8ffe3;">
-            <i class="fa fa-check-circle"></i>
-            <?php echo htmlspecialchars($flashSuccess, ENT_QUOTES, 'UTF-8'); ?>
-        </div>
-    <?php endif; ?>
-
     <div class="greeting">
         <div id="greet"></div>
         <div id="clock"></div>
@@ -195,20 +184,22 @@
     </div>
 </div>
 
+<script src="<?php echo base_url('assets/sweetalert2/sweetalert2.min.js'); ?>"></script>
 <script>
-    setTimeout(function(){
-        var alert=document.getElementById("alertFlash");
-        if(alert){
-            alert.style.transition="opacity 0.5s, max-height 0.5s, margin 0.5s, padding 0.5s";
-            alert.style.opacity="0";
-            alert.style.maxHeight="0";
-            alert.style.margin="0";
-            alert.style.padding="0";
-            setTimeout(function(){
-                if(alert && alert.parentNode){ alert.parentNode.removeChild(alert); }
-            }, 650);
-        }
-    },10000);
+    var flashError = <?php echo json_encode($flashError ?: ''); ?>;
+    var flashSuccess = <?php echo json_encode($flashSuccess ?: ''); ?>;
+
+    if (flashError || flashSuccess) {
+        Swal.fire({
+            title: flashError ? 'Gagal' : 'Berhasil',
+            text: flashError || flashSuccess,
+            icon: flashError ? 'error' : 'success',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: true,
+            confirmButtonText: 'OK'
+        });
+    }
 
     function updateClock(){
         const now=new Date();

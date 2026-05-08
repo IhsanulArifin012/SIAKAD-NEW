@@ -33,7 +33,7 @@
                         <th>NO</th>
                         <!-- Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS) -->
                         <!-- <th>Jurusan &amp; Tingkatan</th> -->
-                        <th>Tingkatan</th>
+                        <th>KELAS</th>
                         <th>MATA PELAJARAN</th>
                         <th>HARI</th>
                         <th>JAM</th>
@@ -49,7 +49,7 @@
                                 <td>$no</td>
                                 <!-- Jurusan disembunyikan untuk SD (tidak ada jurusan IPA/IPS) -->
                                 <!-- <td>Jurusan $row->nama_jurusan $row->nama_tingkatan</td> -->
-                                <td>$row->nama_tingkatan</td>
+                                <td>$row->nama_tingkatan ($row->nama_kelas)</td>
                                 <td>$row->nama_mapel</td>
                                 <td>$row->hari</td>
                                 <td>$row->jam</td>
