@@ -13,14 +13,15 @@
 
     <style>
         :root{
-            --card-bg: rgba(255,255,255,.12);
-            --card-border: rgba(255,255,255,.22);
-            --text: #ffffff;
-            --muted: rgba(255,255,255,.85);
-            --input-bg: rgba(255,255,255,.14);
-            --input-border: rgba(255,255,255,.32);
-            --accent: #ffd24d;
-            --accent-hover: #ffca2b;
+            --panel-bg: rgba(255,255,255,.92);
+            --panel-border: rgba(255,255,255,.55);
+            --text: #10202f;
+            --muted: #607285;
+            --input-bg: #f7fafc;
+            --input-border: #d6e0ea;
+            --accent: #0b6ea8;
+            --accent-hover: #075b8b;
+            --gold: #f3b23c;
         }
 
         body{
@@ -31,69 +32,124 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px 16px;
+            padding: 40px;
             color: var(--text);
             background:
-                linear-gradient(rgba(7,39,66,.80), rgba(7,39,66,.90)),
+                linear-gradient(90deg, rgba(6,29,47,.44) 0%, rgba(6,29,47,.18) 42%, rgba(6,29,47,.66) 100%),
+                url('<?php echo base_url('assets/dist/img/login/school-background.jpg'); ?>'),
                 url('<?php echo base_url('assets/dist/img/boxed-bg.jpg'); ?>');
             background-size: cover;
             background-position: center;
+            overflow-x: hidden;
+        }
+
+        body::before{
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 18% 15%, rgba(243,178,60,.22), transparent 26%),
+                linear-gradient(180deg, rgba(255,255,255,.08), rgba(7,28,45,.22));
+            pointer-events: none;
+        }
+
+        .login-shell{
+            position: relative;
+            z-index: 1;
+            width: min(440px, 100%);
         }
 
         .login-card{
-            width: min(420px, 100%);
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            box-shadow: 0 10px 40px rgba(0,0,0,.45);
-            padding: 34px 34px 22px;
+            width: 100%;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            box-shadow: 0 24px 70px rgba(5,22,36,.34);
+            padding: 32px;
         }
 
         @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
             .login-card{
-                -webkit-backdrop-filter: blur(14px);
-                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(16px);
+                backdrop-filter: blur(16px);
             }
         }
 
-        .logo-box{text-align:center;margin-bottom:14px;}
+        .school-kicker{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .logo-box{text-align:left;margin:0;}
         .logo-circle{
-            width: 92px;
-            height: 92px;
+            width: 72px;
+            height: 72px;
             background: #fff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px;
-            box-shadow: 0 4px 18px rgba(0,0,0,.4);
+            margin: 0;
+            box-shadow: 0 8px 22px rgba(16,32,47,.16);
+            border: 1px solid rgba(11,110,168,.16);
         }
-        .logo-circle img{width: 68px; max-width: 68px; height: auto; display:block;}
+        .logo-circle img{width: 52px; max-width: 52px; height: auto; display:block;}
 
-        .school-title{text-align:center;margin-bottom:18px;}
-        .school-title h3{margin:0;font-weight:600;letter-spacing:.5px;}
-        .school-title small{opacity:.9;}
+        .school-title{margin:0;}
+        .school-title h3{
+            margin:0;
+            color: #0c2c45;
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: .4px;
+        }
+        .school-title small{
+            display: block;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 14px;
+        }
 
-        .alert-login{
-            background: rgba(255,70,70,.18);
-            border: 1px solid rgba(255,70,70,.5);
-            color: #ffdede;
-            padding: 10px 12px;
-            border-radius: 8px;
+        .login-heading{
+            margin-bottom: 22px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(96,114,133,.18);
+        }
+
+        .login-heading h1{
+            margin: 0 0 8px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #122f47;
+        }
+
+        .login-heading p{
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .greeting{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            border: 1px solid rgba(11,110,168,.14);
+            border-radius: 10px;
+            background: rgba(11,110,168,.06);
+            color: #24465f;
             font-size: 13px;
-            margin: 0 0 14px;
-            animation: fadeIn .25s ease;
         }
-        @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-8px);}
-            to{opacity:1; transform:translateY(0);}
-        }
-
-        .greeting{text-align:center;margin-bottom:14px;font-size:14px;opacity:.92;}
-        #clock{font-weight:600;letter-spacing:1px;}
+        #clock{font-weight:700;letter-spacing:.4px;color:#0b6ea8;}
 
         .form-group{position:relative;margin-bottom:16px;}
-        .form-group i{position:absolute;top:13px;left:14px;color:#f0f0f0;}
+        .form-group i{position:absolute;top:14px;left:14px;color:#7d90a2;}
 
         .form-control{
             background: var(--input-bg);
@@ -103,86 +159,122 @@
             padding-left: 40px;
             border-radius: 8px;
         }
-        .form-control::placeholder{color: rgba(255,255,255,.82);}
+        .form-control::placeholder{color: #8293a5;}
         .form-control:focus{
-            border-color: rgba(255,255,255,.75);
-            box-shadow: 0 0 0 3px rgba(255,255,255,.14);
+            border-color: rgba(11,110,168,.62);
+            box-shadow: 0 0 0 3px rgba(11,110,168,.14);
+            background: #fff;
         }
 
         .btn-login{
-            height: 46px;
+            height: 48px;
             border-radius: 8px;
             background: var(--accent);
-            color: #1b2a3a;
-            font-weight: 600;
+            color: #fff;
+            font-weight: 700;
             border: none;
+            box-shadow: 0 12px 24px rgba(11,110,168,.22);
         }
         .btn-login:hover{background: var(--accent-hover);}
 
         .footer{
             text-align:center;
             font-size: 12px;
-            margin-top: 14px;
-            opacity: .88;
+            margin-top: 18px;
+            color: var(--muted);
+        }
+
+        .offline-note{
+            position: fixed;
+            left: 24px;
+            bottom: 22px;
+            z-index: 1;
+            padding: 9px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,.86);
+            color: #26465d;
+            font-size: 12px;
+            box-shadow: 0 12px 30px rgba(5,22,36,.18);
+        }
+
+        @media (max-width: 768px){
+            body{
+                justify-content: center;
+                padding: 24px 16px;
+            }
+            .offline-note{display:none;}
         }
 
         @media (max-width: 480px){
-            .login-card{padding: 28px 20px 18px; border-radius: 16px;}
-            .logo-circle{width: 84px; height: 84px;}
-            .logo-circle img{width: 60px; max-width: 60px;}
+            .login-card{padding: 24px 20px 18px;}
+            .logo-circle{width: 64px; height: 64px;}
+            .logo-circle img{width: 46px; max-width: 46px;}
+            .school-title h3{font-size: 26px;}
+            .login-heading h1{font-size: 21px;}
+            .greeting{align-items:flex-start;flex-direction:column;}
         }
     </style>
 </head>
 <body>
 
-<div class="login-card">
-    <div class="logo-box">
-        <div class="logo-circle">
-            <img
-                src="<?php echo base_url('assets/dist/img/tutwuri.png'); ?>"
-                alt="Logo Tut Wuri Handayani"
-                loading="eager"
-                decoding="async"
-                onerror="this.onerror=null;this.src='<?php echo base_url('assets/dist/img/tutwuri.jpg'); ?>';"
-            >
-        </div>
-    </div>
+<div class="login-shell">
+    <div class="login-card">
+        <div class="school-kicker">
+            <div class="logo-box">
+                <div class="logo-circle">
+                    <img
+                        src="<?php echo base_url('assets/dist/img/tutwuri.png'); ?>"
+                        alt="Logo Tut Wuri Handayani"
+                        loading="eager"
+                        decoding="async"
+                        onerror="this.onerror=null;this.src='<?php echo base_url('assets/dist/img/tutwuri.jpg'); ?>';"
+                    >
+                </div>
+            </div>
 
-    <div class="school-title">
-        <h3>SIAKAD</h3>
-        <small>SDN Rantau Kanan 2</small>
-    </div>
-
-    <?php
-        $flashError = $this->session->flashdata('error');
-        $flashSuccess = $this->session->flashdata('success');
-        if ($flashError) { $this->session->unset_userdata('error'); }
-        if ($flashSuccess) { $this->session->unset_userdata('success'); }
-    ?>
-
-    <div class="greeting">
-        <div id="greet"></div>
-        <div id="clock"></div>
-    </div>
-
-    <?php echo form_open('auth/check_login'); ?>
-        <div class="form-group">
-            <i class="fa fa-user"></i>
-            <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
+            <div class="school-title">
+                <h3>SIAKAD</h3>
+                <small>SDN Rantau Kanan 2</small>
+            </div>
         </div>
 
-        <div class="form-group">
-            <i class="fa fa-lock"></i>
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
+        <div class="login-heading">
+            <h1>Selamat Datang</h1>
+            <p>Sistem Informasi Akademik Sekolah Dasar</p>
         </div>
 
-        <button type="submit" name="submit" class="btn btn-login btn-block">Masuk</button>
-    </form>
+        <?php
+            $flashError = $this->session->flashdata('error');
+            $flashSuccess = $this->session->flashdata('success');
+            if ($flashError) { $this->session->unset_userdata('error'); }
+            if ($flashSuccess) { $this->session->unset_userdata('success'); }
+        ?>
 
-    <div class="footer">
-        &copy; <?php echo date('Y');?> Sistem Informasi Akademik Sekolah
+        <div class="greeting">
+            <div id="greet"></div>
+            <div id="clock"></div>
+        </div>
+
+        <?php echo form_open('auth/check_login'); ?>
+            <div class="form-group">
+                <i class="fa fa-user"></i>
+                <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <i class="fa fa-lock"></i>
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+
+            <button type="submit" name="submit" class="btn btn-login btn-block">Masuk</button>
+        </form>
+
+        <div class="footer">
+            &copy; <?php echo date('Y');?> Sistem Informasi Akademik Sekolah
+        </div>
     </div>
 </div>
+<div class="offline-note">Background tersimpan lokal untuk akses offline</div>
 
 <script src="<?php echo base_url('assets/sweetalert2/sweetalert2.min.js'); ?>"></script>
 <script>
