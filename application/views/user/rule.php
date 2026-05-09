@@ -46,6 +46,11 @@
                 <div id="table-module"></div>
 
             </div>
+            <div class="box-footer">
+                <button type="button" id="btnSimpanRule" class="btn btn-primary btn-flat">
+                    <i class="fa fa-save"></i> Simpan Hak Akses
+                </button>
+            </div>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
@@ -94,18 +99,56 @@
         })
     }
 
-    function addRule(id_modul)
-    {
+    $(document).on('click', '#btnSimpanRule', function(){
         var level = $("#filter_level").val();
-        $.ajax({
-            type    : 'GET',
-            url     : '<?php echo base_url() ?>user/add_rule',
-            data    : 'level_user='+level+'&id_modul='+id_modul,
-            success : function(html) {
-                //loadData();
-                alert("Sukses Merubah Hak Akses");
+        var modul = [];
+
+        $(".module-rule:checked").each(function(){
+            modul.push($(this).val());
+        });
+
+        if(!level){
+            Swal.fire({
+                title: 'Peringatan',
+                text: 'Level user belum dipilih.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Simpan hak akses?',
+            text: 'Hak akses module akan diperbarui sesuai pilihan saat ini.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, simpan',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type    : 'POST',
+                    url     : '<?php echo base_url() ?>user/save_rule',
+                    data    : {level_user: level, id_modul: modul},
+                    dataType: 'json',
+                    success : function(response) {
+                        Swal.fire({
+                            title: response.status ? 'Berhasil' : 'Gagal',
+                            text: response.message,
+                            icon: response.status ? 'success' : 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    error : function() {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: 'Terjadi kesalahan saat menyimpan hak akses.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             }
-        })
-        
-    }
+        });
+    });
 </script>

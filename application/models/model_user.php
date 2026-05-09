@@ -14,6 +14,15 @@
 			return $user;
 		}
 
+		function get_all_usernames()
+		{
+			$this->db->select('username');
+			$this->db->from($this->table);
+			$this->db->where('username !=', '');
+			$this->db->order_by('username', 'ASC');
+			return $this->db->get()->result_array();
+		}
+
 		function save($foto)
 		{
 			$data = array(

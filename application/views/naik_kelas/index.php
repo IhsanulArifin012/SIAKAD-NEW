@@ -22,7 +22,7 @@
 						</div>
 					</div>
 
-					<form method="post" action="<?php echo base_url('naik_kelas/proses'); ?>" onsubmit="return confirmSubmit();">
+					<form method="post" action="<?php echo base_url('naik_kelas/proses'); ?>" onsubmit="return confirmSubmit(this);">
 						<input type="hidden" name="kelas_asal" id="kelas_asal_val" value="">
 						<input type="hidden" name="kelas_tujuan" id="kelas_tujuan_val" value="">
 						<button type="submit" class="btn btn-info">
@@ -100,14 +100,33 @@
 		});
 	}
 
-	function confirmSubmit() {
+	function confirmSubmit(form) {
 		var asal = $("#kelas_asal_val").val();
 		var tujuan = $("#kelas_tujuan_val").val();
 		if (!asal || !tujuan) {
-			alert('Kelas asal dan tujuan wajib dipilih.');
+			Swal.fire({
+				title: 'Peringatan',
+				text: 'Kelas asal dan tujuan wajib dipilih.',
+				icon: 'warning',
+				confirmButtonText: 'OK'
+			});
 			return false;
 		}
-		return confirm("Yakin naikkan semua siswa dari " + asal + " ke " + tujuan + "?");
+
+		Swal.fire({
+			title: 'Naikkan kelas?',
+			text: 'Yakin naikkan semua siswa dari ' + asal + ' ke ' + tujuan + '?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Ya, naikkan',
+			cancelButtonText: 'Batal'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				HTMLFormElement.prototype.submit.call(form);
+			}
+		});
+
+		return false;
 	}
 
 	$(document).ready(function () {

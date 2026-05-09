@@ -157,15 +157,56 @@
 							<td class='text-center'>$no</td>
 							<td>$row->nama_menu</td>
 							<td>$row->link</td>
-							<td class='text-center'><input type='checkbox' "; 
+							<td class='text-center'><input type='checkbox' class='module-rule' value='$row->id' "; 
 				$this->check_module($level_user, $row->id);			
-				echo		"onClick='addRule($row->id)'></td>
+				echo		"></td>
 	        		 </tr>";
 	        	$no++;
 	        }
-	        // di checkbox onClick='addRule($row->id)' akan memparsing id menu yang di klik sehingga dapat ditangkap oleh function ajax di addRule->terletak di user/rule
 	        echo    "</thead>
 	              </table>";
+		}
+
+		function save_rule()
+		{
+			$level_user = $this->input->post('level_user');
+			$id_modul = $this->input->post('id_modul');
+
+			if (empty($level_user)) {
+				$this->output
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode(array(
+						'status' => false,
+						'message' => 'Level user wajib dipilih.'
+					)));
+				return;
+			}
+
+			if (!is_array($id_modul)) {
+				$id_modul = array();
+			}
+			$id_modul = array_unique(array_map('intval', $id_modul));
+
+			$this->db->trans_start();
+			$this->db->where('id_level_user', $level_user);
+			$this->db->delete('tbl_user_rule');
+
+			foreach ($id_modul as $id_menu) {
+				$this->db->insert('tbl_user_rule', array(
+					'id_level_user' => $level_user,
+					'id_menu' => $id_menu
+				));
+			}
+			$this->db->trans_complete();
+
+			$this->output
+				->set_content_type('application/json', 'utf-8')
+				->set_output(json_encode(array(
+					'status' => $this->db->trans_status(),
+					'message' => $this->db->trans_status()
+						? 'Hak akses module berhasil disimpan.'
+						: 'Hak akses module gagal disimpan.'
+				)));
 		}
 
 		// function check_module digunakan untuk memanggil checked ke dalam tag html, sehingga apabila datanya ada maka akan menampilkan centang sesuai $id_menu dan $level_user

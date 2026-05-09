@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="<?php echo base_url('assets/bower_components/bootstrap/dist/css/bootstrap.min.css'); ?>">
     <link rel="stylesheet" href="<?php echo base_url('assets/bower_components/font-awesome/css/font-awesome.min.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('assets/bower_components/select2/dist/css/select2.min.css'); ?>">
     <link rel="stylesheet" href="<?php echo base_url('assets/sweetalert2/sweetalert2.min.css'); ?>">
     <!-- Google Fonts removed to avoid external stylesheet load failures in offline/blocked environments -->
 
@@ -166,6 +167,43 @@
             background: #fff;
         }
 
+        .select2-container{width:100%!important;}
+        .select2-container--default .select2-selection--single{
+            height: 46px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered{
+            color: var(--text);
+            line-height: 44px;
+            padding-left: 40px;
+            padding-right: 34px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__placeholder{
+            color: #8293a5;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow{
+            height: 44px;
+            right: 8px;
+        }
+        .select2-container--default.select2-container--focus .select2-selection--single,
+        .select2-container--default.select2-container--open .select2-selection--single{
+            border-color: rgba(11,110,168,.62);
+            box-shadow: 0 0 0 3px rgba(11,110,168,.14);
+            background: #fff;
+        }
+        .select2-dropdown{
+            border-color: var(--input-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .select2-search--dropdown .select2-search__field{
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            outline: none;
+        }
+
         .btn-login{
             height: 48px;
             border-radius: 8px;
@@ -255,10 +293,17 @@
             <div id="clock"></div>
         </div>
 
-        <?php echo form_open('auth/check_login'); ?>
+        <?php echo form_open('auth/check_login', 'id="form-login"'); ?>
             <div class="form-group">
                 <i class="fa fa-user"></i>
-                <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
+                <select name="username" id="username" class="form-control username-select" required <?php echo empty($users) ? 'disabled' : ''; ?>>
+                    <option value=""><?php echo empty($users) ? 'Tidak ada user tersedia' : 'Pilih username'; ?></option>
+                    <?php foreach (($users ?? array()) as $user): ?>
+                        <option value="<?php echo html_escape($user['username']); ?>">
+                            <?php echo html_escape($user['username']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="form-group">
@@ -274,12 +319,35 @@
         </div>
     </div>
 </div>
-<div class="offline-note">Background tersimpan lokal untuk akses offline</div>
 
+
+<script src="<?php echo base_url('assets/bower_components/jquery/dist/jquery.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/bower_components/select2/dist/js/select2.full.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/bower_components/select2/dist/js/i18n/id.js'); ?>"></script>
 <script src="<?php echo base_url('assets/sweetalert2/sweetalert2.min.js'); ?>"></script>
 <script>
     var flashError = <?php echo json_encode($flashError ?: ''); ?>;
     var flashSuccess = <?php echo json_encode($flashSuccess ?: ''); ?>;
+    var hasUsers = <?php echo empty($users) ? 'false' : 'true'; ?>;
+
+    $('.username-select').select2({
+        placeholder: hasUsers ? 'Pilih username' : 'Tidak ada user tersedia',
+        allowClear: hasUsers,
+        width: '100%',
+        language: 'id'
+    });
+
+    $('#form-login').on('submit', function(e) {
+        if (!$('#username').val()) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Peringatan',
+                text: hasUsers ? 'Username wajib dipilih.' : 'Tidak ada user tersedia.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
 
     if (flashError || flashSuccess) {
         Swal.fire({

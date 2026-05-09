@@ -20,6 +20,8 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('auth/login');
+		$this->load->model('model_user');
+		$data['users'] = $this->model_user->get_all_usernames();
+		$this->load->view('auth/login', $data);
 	}
 }

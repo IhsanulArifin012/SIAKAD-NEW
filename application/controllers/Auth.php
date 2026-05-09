@@ -12,7 +12,8 @@
 		
 		function index()
 		{
-			$this->load->view('auth/login');
+			$data['users'] = $this->model_user->get_all_usernames();
+			$this->load->view('auth/login', $data);
 		}
 
 		function check_login()
@@ -21,6 +22,14 @@
 				
 				$username	= $this->input->post('username');
 				$password 	= $this->input->post('password');
+
+				if (empty($username))
+				{
+					$this->session->unset_userdata('success');
+					$this->session->set_flashdata('error', 'Username wajib dipilih.');
+					redirect('auth');
+					return;
+				}
 
 				// Validasi username/password agar pesan error lebih jelas.
 				$userByUsername = $this->db->get_where('tbl_user', array('username' => $username))->row_array();
