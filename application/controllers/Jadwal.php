@@ -11,6 +11,60 @@
 			$this->load->model('model_jadwal');
 		}
 
+		private function is_walikelas()
+		{
+			return (int) $this->session->userdata('id_level_user') === 2;
+		}
+
+		private function get_walikelas_context()
+		{
+			$idGuru = (int) $this->session->userdata('id_guru');
+			if ($idGuru <= 0)
+			{
+				$this->session->set_flashdata('error', 'Akun Anda belum terhubung ke data guru.');
+				redirect('tampilan_utama');
+				return null;
+			}
+
+			$idTahunAkademik = (int) get_tahun_akademik('id_tahun_akademik');
+			$walikelas = $this->db->get_where('tbl_walikelas', array(
+				'id_guru' => $idGuru,
+				'id_tahun_akademik' => $idTahunAkademik,
+			))->row_array();
+
+			if (empty($walikelas) || empty($walikelas['kd_kelas']))
+			{
+				$this->session->set_flashdata('error', 'Data wali kelas belum ditemukan untuk tahun akademik aktif.');
+				redirect('tampilan_utama');
+				return null;
+			}
+
+			$kelas = $this->db->get_where('tbl_kelas', array('kd_kelas' => $walikelas['kd_kelas']))->row_array();
+
+			return array(
+				'walikelas' => $walikelas,
+				'kelas' => $kelas,
+			);
+		}
+
+		private function block_walikelas_write()
+		{
+			if ( ! $this->is_walikelas())
+			{
+				return false;
+			}
+
+			if ($this->input->is_ajax_request())
+			{
+				header('Content-Type: application/json');
+				echo json_encode(array('status' => 'error', 'message' => 'Wali kelas hanya dapat melihat jadwal pelajaran.'));
+				return true;
+			}
+
+			show_error('Wali kelas hanya dapat melihat jadwal pelajaran.', 403);
+			return true;
+		}
+
 		function index()
 		{
 			// Apabila yang login = guru (id_level_user 3 = guru) maka hanya akan menampilkan jadwal yang hanya diajar oleh guru tersebut
@@ -27,6 +81,18 @@
 				$data['jadwal'] =$this->db->query($sql);
 				// load daftar ngajar guru
 				$this->template->load('template', 'jadwal/jadwal_ajar_guru', $data);
+			} elseif ($this->is_walikelas()) {
+				$ctx = $this->get_walikelas_context();
+				if ($ctx === null)
+				{
+					return;
+				}
+
+				$data = array(
+					'readonly' => true,
+					'walikelas_kelas' => $ctx['kelas'],
+				);
+				$this->template->load('template', 'jadwal/view', $data);
 			} else {
 				$this->template->load('template', 'jadwal/view');
 			}
@@ -34,6 +100,11 @@
 
 		function generate_jadwal()
 		{
+			if ($this->block_walikelas_write())
+			{
+				return;
+			}
+
 			if ( ! $this->input->post('submit')) {
 				redirect('jadwal');
 				return;
@@ -71,6 +142,17 @@
 			$kode_tingkatan		= $_GET['kd_tingkatan'];
 			//$idkurikulum		= $_GET['kurikulumnya'];
 			$kelas 				= $_GET['kelas'];
+			$readonly = $this->is_walikelas();
+
+			if ($readonly)
+			{
+				$ctx = $this->get_walikelas_context();
+				if ($ctx === null)
+				{
+					return;
+				}
+				$kelas = $ctx['walikelas']['kd_kelas'];
+			}
 
 			echo "<table class='table table-striped table-bordered table-hover table-full-width dataTable'>
                     <thead>
@@ -81,14 +163,17 @@
                             <th class='text-center'>RUANGAN</th>
                             <th class='text-center'>HARI</th>
                             <th class='text-center'>JAM</th>
-                            <th></th>
+                            ".($readonly ? "" : "<th></th>")."
                         </tr>
                     </thead>";
 
-  			$sql_datajadwal	= "SELECT tj.id_jadwal, tm.nama_mapel, tg.id_guru, tg.nama_guru, tr.kd_ruangan, tj.hari, 				   tj.jam
-							   FROM tbl_jadwal AS tj, tbl_mapel AS tm, tbl_guru AS tg, tbl_ruangan AS tr
-							   WHERE tj.kd_mapel = tm.kd_mapel AND tj.id_guru = tg.id_guru AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_kelas = '$kelas'";
-			$data_jadwal	= $this->db->query($sql_datajadwal)->result();
+  			$sql_datajadwal	= "SELECT tj.id_jadwal, tm.nama_mapel, tg.id_guru, tg.nama_guru, tr.kd_ruangan, tr.nama_ruangan, tj.hari, tj.jam
+							   FROM tbl_jadwal AS tj
+							   JOIN tbl_mapel AS tm ON tj.kd_mapel = tm.kd_mapel
+							   LEFT JOIN tbl_guru AS tg ON tj.id_guru = tg.id_guru
+							   LEFT JOIN tbl_ruangan AS tr ON tj.kd_ruangan = tr.kd_ruangan
+							   WHERE tj.kd_kelas = ?";
+			$data_jadwal	= $this->db->query($sql_datajadwal, array($kelas))->result();
 			$no = 1;
 			$jam_pelajaran	= $this->model_jadwal->jamPelajaran();
 			$hari           = array(
@@ -104,6 +189,20 @@
 			// untuk selected $row->id, harus memasukan field id terlebih dahulu di $sql_datajadwal
 			// sbg contoh $row->id_guru, harus menambahkan tg.id_guru di $sql_datajadwal agar ketika di jalankan querynya pada $data_jadwal akan membuat kolom baru yang berisi id_guru lalu baru bisa diambil idnya agar menampilkan data yang selected sesuai database pada cmb_dinamis.
 			foreach ($data_jadwal as $row) {
+				if ($readonly)
+				{
+					echo "<tr>
+							<td class='text-center'>$no</td>
+							<td>$row->nama_mapel</td>
+							<td>".($row->nama_guru ?: '-')."</td>
+							<td>".($row->nama_ruangan ?: '-')."</td>
+							<td>".($row->hari ?: '-')."</td>
+							<td>".($row->jam ?: '-')."</td>
+						 </tr>";
+					$no++;
+					continue;
+				}
+
 				echo "<tr>
 						<td class='text-center'>$no</td>
 						<td>$row->nama_mapel</td>
@@ -126,6 +225,11 @@
 
 		function update_guru()
 		{
+			if ($this->block_walikelas_write())
+			{
+				return;
+			}
+
 			$idguru 	= $_GET['id_guru'];
 			$idjadwal 	= $_GET['id_jadwal'];
 			$this->db->where('id_jadwal', $idjadwal);
@@ -134,6 +238,11 @@
 
 		function update_ruangan()
 		{
+			if ($this->block_walikelas_write())
+			{
+				return;
+			}
+
 			$kdruangan 	= $_GET['kd_ruangan'];
 			$idjadwal 	= $_GET['id_jadwal'];
 			$this->db->where('id_jadwal', $idjadwal);
@@ -142,6 +251,11 @@
 
 		function update_hari()
 		{
+			if ($this->block_walikelas_write())
+			{
+				return;
+			}
+
 			$harinya 	= $_GET['hari'];
 			$idjadwal 	= $_GET['id_jadwal'];
 			$this->db->where('id_jadwal', $idjadwal);
@@ -150,6 +264,11 @@
 
 		function update_jam()
 		{
+			if ($this->block_walikelas_write())
+			{
+				return;
+			}
+
 			$jamnya 	= $_GET['jam'];
 			$idjadwal 	= $_GET['id_jadwal'];
 			$this->db->where('id_jadwal', $idjadwal);
@@ -158,6 +277,11 @@
 
 		function delete_dataJadwal()
 		{
+			if ($this->block_walikelas_write())
+			{
+				return;
+			}
+
 			$idjadwal = (int) $this->uri->segment(3);
 			if ($idjadwal <= 0)
 			{
@@ -180,6 +304,11 @@
 
 		function delete_all_dataJadwal()
 		{
+			if ($this->block_walikelas_write())
+			{
+				return;
+			}
+
 			$kelas = $this->input->get('kelas', TRUE);
 
 			if (empty($kelas)) {
@@ -208,6 +337,22 @@
 
 		function tampil_kelas()
 		{
+			if ($this->is_walikelas())
+			{
+				$ctx = $this->get_walikelas_context();
+				if ($ctx === null)
+				{
+					return;
+				}
+				$kelas = $ctx['kelas'];
+				$kdKelas = $ctx['walikelas']['kd_kelas'];
+				$namaKelas = $kelas['nama_kelas'] ?? $kdKelas;
+				echo "<select id='kelas' name='kelas' class='form-control' onChange='loadPelajaran()'>";
+				echo "<option value='".$kdKelas."'>".$namaKelas."</option>";
+				echo "</select>";
+				return;
+			}
+
 			echo "<select id='kelas' name='kelas' class='form-control' onChange='loadPelajaran()'>";
 
 			// menggunakan get_where
@@ -225,9 +370,20 @@
 			echo "</select>";
 		}
 
-		function cetak_jadwal() {
+	 	function cetak_jadwal() {
 	 		$kelas = $this->input->post('kelas', TRUE);
 	 		$kdTingkatan = $this->input->post('tingkatan_kelas', TRUE);
+
+	 		if ($this->is_walikelas())
+	 		{
+	 			$ctx = $this->get_walikelas_context();
+	 			if ($ctx === null)
+	 			{
+	 				return;
+	 			}
+	 			$kelas = $ctx['walikelas']['kd_kelas'];
+	 			$kdTingkatan = '';
+	 		}
 
 	 		if (empty($kelas))
 	 		{

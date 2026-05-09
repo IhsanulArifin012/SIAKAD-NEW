@@ -20,7 +20,7 @@
 							<td>: <?php echo ($kelas['nama_kelas'] ?? '-'); ?></td>
 						</tr>
 						<tr>
-							<td>Jurusan &amp; Tingkatan</td>
+							<td>Tingkatan</td>
 							<td>: <?php echo 'Jurusan '.($kelas['nama_jurusan'] ?? '-').' '.($kelas['nama_tingkatan'] ?? '-'); ?></td>
 						</tr>
 						<tr>

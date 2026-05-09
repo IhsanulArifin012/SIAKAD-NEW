@@ -81,6 +81,10 @@
 			return;
 		}
 
+		if ((int) $level_User === 2 && ($controller === 'pembayaran' || $controller === 'jadwal')) {
+			return;
+		}
+
 		if (!empty($level_User)) {
 			$check = $ci->db->get_where('tbl_user_rule', array('id_level_user' => $level_User, 'id_menu' => $menu['id']));
 		

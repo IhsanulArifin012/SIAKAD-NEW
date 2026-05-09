@@ -8,7 +8,7 @@ class Pembayaran extends CI_Controller
 		checkAksesModule();
 
 		$level = (int) $this->session->userdata('id_level_user');
-		if ($level !== 1 && $level !== 4)
+		if ($level !== 1 && $level !== 2 && $level !== 4)
 		{
 			show_error('Anda tidak memiliki akses ke menu Pembayaran.', 403);
 		}

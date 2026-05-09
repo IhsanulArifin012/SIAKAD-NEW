@@ -411,6 +411,41 @@ if ($id_level_user > 0)
 	AND is_main_menu = 0";
 
 	$main_menu = $this->db->query($sql_menu)->result();
+
+	if ($id_level_user === 2)
+	{
+		$hasJadwal = false;
+		$hasPembayaran = false;
+		foreach ($main_menu as $menu_item)
+		{
+			if ($menu_item->link === 'jadwal')
+			{
+				$hasJadwal = true;
+			}
+			if ($menu_item->link === 'pembayaran')
+			{
+				$hasPembayaran = true;
+			}
+		}
+
+		if ( ! $hasJadwal)
+		{
+			$jadwalMenu = $this->db->get_where('tabel_menu', array('link' => 'jadwal'))->row();
+			if ( ! empty($jadwalMenu))
+			{
+				$main_menu[] = $jadwalMenu;
+			}
+		}
+
+		if ( ! $hasPembayaran)
+		{
+			$pembayaranMenu = $this->db->get_where('tabel_menu', array('link' => 'pembayaran'))->row();
+			if ( ! empty($pembayaranMenu))
+			{
+				$main_menu[] = $pembayaranMenu;
+			}
+		}
+	}
 }
 
 // Hide "Peserta Didik" untuk role Guru.

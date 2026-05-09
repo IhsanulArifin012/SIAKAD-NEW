@@ -1,4 +1,5 @@
 <section class="content">
+    <?php $readonly = ! empty($readonly); ?>
     <div class="row">
 
         <!-- filter -->
@@ -32,11 +33,15 @@
                     </tr>
                     <tr>
                         <td colspan="2">
+                            <?php if ( ! $readonly): ?>
                             <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
                             <i class="fa fa-cogs" aria-hidden="true"></i> Generate Jadwal
                             </button>
+                            <?php endif; ?>
                             <button type="submit" name="export_jadwal" class="btn btn-danger btn-sm"><i class="fa fa-print" aria-hidden="true"></i> Cetak PDF</button>
+                            <?php if ( ! $readonly): ?>
                             <button type="button" id="btn-delete-all" class="btn btn-warning btn-sm" onclick="deleteAllJadwal()"><i class="fa fa-trash" aria-hidden="true"></i> Hapus Semua</button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 </table>
@@ -73,6 +78,7 @@
           </div>
           <!-- /.box -->
 
+          <?php if ( ! $readonly): ?>
           <div class="alert alert-info alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                             
@@ -82,6 +88,7 @@
                 Lalu baru dikembalikan lagi. Jika tidak, data tidak akan tersimpan di dalam database.<br>
                 Contoh : kalau mau diisi dengan hari senin, langkah pertama ubah dahulu ke hari selasa lalu baru kembalikan ke hari senin.
          </div>
+          <?php endif; ?>
 
         </div>
         <!-- /.col -->
@@ -264,6 +271,7 @@
 
 </script>
 
+<?php if ( ! $readonly): ?>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -344,3 +352,4 @@ $(document).on('click', '.btn-hapus', function(e) {
     });
 });
 </script>
+<?php endif; ?>

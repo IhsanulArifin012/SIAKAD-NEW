@@ -161,11 +161,13 @@ class Seeder extends CI_Controller
 		$wkMainId = $this->upsert_menu('Wali Kelas', 'wali_kelas_menu', 'fa fa-graduation-cap', 0);
 		$wkPortalId = $this->upsert_menu('Portal Wali Kelas', 'portal_walikelas', 'fa fa-dashboard', $wkMainId);
 		$wkSiswaId = $this->upsert_menu('Siswa Kelas', 'wk_siswa', 'fa fa-users', $wkMainId);
+		$jadwalId = $this->upsert_menu('Jadwal Pelajaran', 'jadwal', 'fa fa-calendar-plus-o', 0);
 
 		// Pastikan menu laporan_nilai sudah ada (dipakai wali kelas untuk cetak raport).
 		$laporanId = $this->upsert_menu('Laporan Nilai', 'laporan_nilai', 'fa fa-file-pdf-o', 0);
+		$pembayaranId = $this->upsert_menu('Form Pembayaran', 'pembayaran', 'fa fa-dollar', 0);
 
-		foreach (array($wkMainId, $wkPortalId, $wkSiswaId, $laporanId) as $menuId)
+		foreach (array($wkMainId, $wkPortalId, $wkSiswaId, $jadwalId, $laporanId, $pembayaranId) as $menuId)
 		{
 			$this->ensure_rule(2, $menuId);
 		}

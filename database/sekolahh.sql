@@ -420,7 +420,7 @@ CREATE TABLE IF NOT EXISTS `tbl_user_rule` (
   `id_menu` int NOT NULL,
   `id_level_user` int NOT NULL,
   PRIMARY KEY (`id_rule`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
 
 -- Membuang data untuk tabel sekolahh.tbl_user_rule: ~24 rows (lebih kurang)
 INSERT INTO `tbl_user_rule` (`id_rule`, `id_menu`, `id_level_user`) VALUES
@@ -447,7 +447,9 @@ INSERT INTO `tbl_user_rule` (`id_rule`, `id_menu`, `id_level_user`) VALUES
 	(23, 20, 2),
 	(24, 21, 2),
 	(25, 18, 2),
-	(26, 7, 1);
+	(26, 7, 1),
+	(27, 16, 2),
+	(28, 11, 2);
 
 -- membuang struktur untuk table sekolahh.tbl_walikelas
 CREATE TABLE IF NOT EXISTS `tbl_walikelas` (
