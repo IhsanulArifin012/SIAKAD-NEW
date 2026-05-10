@@ -25,7 +25,11 @@
 				array('db' => 'foto', 
 					  'dt' => 'foto',
 					  'formatter' => function($d) {
-					  		return "<img width='20px' src='".base_url()."/uploads/".$d."'>";
+					  		if (empty($d)) {
+					  			return "<img width='20px' src='".base_url()."/uploads/user-siluet.jpg'>";
+					  		} else {
+					  			return "<img width='20px' src='".base_url()."/uploads/user/".$d."'>";
+					  		}
 					  }
 				),
 		        array('db' => 'nama_lengkap', 'dt' => 'nama_lengkap'),
@@ -79,9 +83,13 @@
 					$this->template->load('template', 'user/add');
 				} else {
 					$uploadFoto = $this->upload_foto_user();
-					$this->model_user->save($uploadFoto);
-					$this->session->set_flashdata('success', 'Data user berhasil disimpan.');
-					redirect('user');
+					if ($this->session->flashdata('error')) {
+						$this->template->load('template', 'user/add');
+					} else {
+						$this->model_user->save($uploadFoto);
+						$this->session->set_flashdata('success', 'Data user berhasil disimpan.');
+						redirect('user');
+					}
 				}
 			} else {
 				$this->template->load('template', 'user/add');
@@ -92,9 +100,15 @@
 		{
 			if (isset($_POST['submit'])) {
 				$uploadFoto = $this->upload_foto_user();
-				$this->model_user->update($uploadFoto);
-				$this->session->set_flashdata('success', 'Data user berhasil diubah.');
-				redirect('user');
+				if ($this->session->flashdata('error')) {
+					$id_user 		= $this->input->post('id_user');
+					$data['user'] 	= $this->db->get_where('tbl_user', array('id_user' => $id_user))->row_array();
+					$this->template->load('template', 'user/edit', $data);
+				} else {
+					$this->model_user->update($uploadFoto);
+					$this->session->set_flashdata('success', 'Data user berhasil diubah.');
+					redirect('user');
+				}
 			} else {
 				$id_user 		= $this->uri->segment(3);
 				$data['user'] 	= $this->db->get_where('tbl_user', array('id_user' => $id_user))->row_array();
@@ -119,14 +133,19 @@
 		{
 			//validasi foto yang di upload
 			$config['upload_path']          = './uploads/user/';
-            $config['allowed_types']        = 'gif|jpg|png';
+            $config['allowed_types']        = 'gif|jpg|png|jpeg';
             $config['max_size']             = 1024;
             $this->load->library('upload', $config);
 
             //proses upload
-            if ($this->upload->do_upload('userfile')) {
-                $upload = $this->upload->data();
-                return $upload['file_name'];
+            if (!empty($_FILES['userfile']['name'])) {
+            	if ($this->upload->do_upload('userfile')) {
+	                $upload = $this->upload->data();
+	                return $upload['file_name'];
+	            } else {
+	            	$this->session->set_flashdata('error', $this->upload->display_errors());
+	            	return '';
+	            }
             }
 
             return '';

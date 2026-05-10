@@ -31,12 +31,22 @@
 
 		function save_detail()
 		{
-			$data = array(
-				'id_kurikulum'	=> $this->input->post('kurikulum', TRUE),
-				'kd_mapel'		=> $this->input->post('mapel', TRUE),
-				'kd_tingkatan'	=> $this->input->post('tingkatan', TRUE)
-			);
-			$this->db->insert('tbl_kurikulum_detail', $data);
+			$kurikulum 	= $this->input->post('kurikulum');
+			$mapels 	= $this->input->post('mapel');
+			$tingkatans = $this->input->post('tingkatan');
+
+			if (is_array($mapels)) {
+				foreach ($mapels as $index => $kd_mapel) {
+					if (!empty($kd_mapel) && !empty($tingkatans[$index])) {
+						$data = array(
+							'id_kurikulum'	=> $kurikulum,
+							'kd_mapel'		=> $kd_mapel,
+							'kd_tingkatan'	=> $tingkatans[$index]
+						);
+						$this->db->insert('tbl_kurikulum_detail', $data);
+					}
+				}
+			}
 		}
 
 	}

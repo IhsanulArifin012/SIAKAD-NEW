@@ -149,7 +149,7 @@ class Kurikulum extends CI_Controller
                     <td>$no</td>
                     <td>$row->kd_mapel</td>
                     <td>$row->nama_mapel</td>
-                    <td>" . anchor('kurikulum/delete_detail/' . $row->id_kurikulum_detail . '/' . $row->id_kurikulum, 'Hapus') . "</td>
+                    <td><button onclick='hapusDetail(" . $row->id_kurikulum_detail . ")' class='btn btn-xs btn-danger'><i class='fa fa-trash'></i> Hapus</button></td>
                   </tr>";
             $no++;
         }
@@ -161,6 +161,7 @@ class Kurikulum extends CI_Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model_kurikulum->save_detail();
+            $this->session->set_flashdata('success', 'Data Detail Kurikulum Berhasil Disimpan');
             redirect('kurikulum/detail/' . $this->input->post('kurikulum'));
         } else {
             $this->template->load('template', 'kurikulum/add_detail');
@@ -175,8 +176,7 @@ class Kurikulum extends CI_Controller
         if (!empty($id_detail)) {
             $this->db->where('id_kurikulum_detail', $id_detail);
             $this->db->delete('tbl_kurikulum_detail');
+            echo "Success";
         }
-
-        redirect('kurikulum/detail/' . $id_kurikulum);
     }
 }

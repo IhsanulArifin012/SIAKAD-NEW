@@ -25,7 +25,11 @@
 			array('db' => 'foto', 
 				  'dt' => 'foto',
 				  'formatter' => function($d) {
-					  return "<img width='20px' src='".base_url()."/uploads/".$d."'>";
+					  if (empty($d)) {
+						  return "<img width='20px' src='".base_url()."/uploads/user-siluet.jpg'>";
+					  } else {
+						  return "<img width='20px' src='".base_url()."/uploads/".$d."'>";
+					  }
 				  }
 			),
 			array('db' => 'nim', 'dt' => 'nim'),
@@ -90,9 +94,13 @@
 			}
 			
 			$uploadFoto = $this->upload_foto_siswa();
-			$this->model_siswa->save($uploadFoto);
-			$this->session->set_flashdata('success', 'Data berhasil disimpan!');
-			redirect('siswa');
+			if ($this->session->flashdata('error')) {
+				$this->template->load('template', 'siswa/add');
+			} else {
+				$this->model_siswa->save($uploadFoto);
+				$this->session->set_flashdata('success', 'Data berhasil disimpan!');
+				redirect('siswa');
+			}
 			} else {
 				$this->template->load('template', 'siswa/add');
 			}
@@ -102,9 +110,15 @@
 		{
 			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$uploadFoto = $this->upload_foto_siswa();
-				$this->model_siswa->update($uploadFoto);
-				$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
-				redirect('siswa');
+				if ($this->session->flashdata('error')) {
+					$nim = $this->input->post('nim');
+					$data['siswa'] = $this->db->get_where('tbl_siswa', ['nim' => $nim])->row_array();
+					$this->template->load('template', 'siswa/edit', $data);
+				} else {
+					$this->model_siswa->update($uploadFoto);
+					$this->session->set_flashdata('success', 'Data berhasil diperbarui!');
+					redirect('siswa');
+				}
 			} else {
 				$nim = $this->uri->segment(3);
 				if (empty($nim)) {
@@ -137,14 +151,22 @@
 		{
 			//validasi foto yang di upload
 			$config['upload_path']          = './uploads/';
-            $config['allowed_types']        = 'gif|jpg|png';
+            $config['allowed_types']        = 'gif|jpg|png|jpeg';
             $config['max_size']             = 1024;
             $this->load->library('upload', $config);
 
             //proses upload
-            $this->upload->do_upload('userfile');
-            $upload = $this->upload->data();
-            return $upload['file_name'];
+            if (!empty($_FILES['userfile']['name'])) {
+            	if ($this->upload->do_upload('userfile')) {
+	                $upload = $this->upload->data();
+	                return $upload['file_name'];
+	            } else {
+	            	$this->session->set_flashdata('error', $this->upload->display_errors());
+	            	return '';
+	            }
+            }
+
+            return '';
 		}
 
 		// siswa_aktif() -> untuk menampilkan view peserta didik ->terletak di controller Siswa

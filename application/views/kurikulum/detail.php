@@ -88,23 +88,36 @@
     }
 </script>
 
-<script>
-$(document).on('click', '.btn-hapus', function(e){
-    e.preventDefault();
-
-    let url = $(this).attr('href');
-
-    Swal.fire({
-        title: 'Hapus data?',
-        text: 'Data tidak bisa dikembalikan!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, hapus',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = url;
-        }
-    });
-});
+<script type="text/javascript">
+    function hapusDetail(id) {
+        Swal.fire({
+            title: 'Hapus data?',
+            text: 'Data tidak bisa dikembalikan!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'GET',
+                    url: '<?php echo site_url("kurikulum/delete_detail") ?>/' + id,
+                    success: function(response) {
+                        console.log('Response from server:', response);
+                        if (response.trim().includes('Success')) {
+                            Swal.fire('Berhasil', 'Data berhasil dihapus', 'success');
+                            loadData(); // Refresh table
+                        } else {
+                            Swal.fire('Gagal', 'Data gagal dihapus. Pesan server: ' + response, 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                        console.log('XHR Response:', xhr.responseText);
+                        Swal.fire('Error', 'Terjadi kesalahan pada server (Status: ' + status + ')', 'error');
+                    }
+                });
+            }
+        });
+    }
 </script>

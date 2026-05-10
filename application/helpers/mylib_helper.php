@@ -88,7 +88,7 @@
 		if (!empty($level_User)) {
 			$check = $ci->db->get_where('tbl_user_rule', array('id_level_user' => $level_User, 'id_menu' => $menu['id']));
 		
-			if ($check->num_rows() < 1 AND $method != 'data' AND $method != 'add' AND $method != 'edit' AND $method != 'delete' AND $method != 'kwitansi' AND $method != 'upload_foto_siswa' AND $method != 'siswa_aktif' AND $method != 'loadDataSiswa' AND $method != 'export_excel' AND $method != 'combobox_kelas' AND $method != 'upload_foto_siswa') {
+			if ($check->num_rows() < 1 AND $method != 'data' AND $method != 'add' AND $method != 'edit' AND $method != 'delete' AND $method != 'detail' AND $method != 'add_detail' AND $method != 'delete_detail' AND $method != 'dataKurikulumDetail' AND $method != 'kwitansi' AND $method != 'upload_foto_siswa' AND $method != 'siswa_aktif' AND $method != 'loadDataSiswa' AND $method != 'export_excel' AND $method != 'combobox_kelas' AND $method != 'upload_foto_siswa') {
 				echo "Anda Tidak Boleh Akses Module Ini";
 				die;
 			}
