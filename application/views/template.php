@@ -357,7 +357,7 @@ switch($level){
     <?php echo anchor(
         'auth/logout',
         '<i class="fa fa-sign-out"></i> Logout',
-        'class="btn btn-block logout-btn"'
+        'class="btn btn-block logout-btn logout-confirm"'
     ); ?>
 </li>
 
@@ -545,7 +545,7 @@ echo "<li class='$is_active'>".anchor($main->link,"<i class='".$main->icon."'></
     <?php echo anchor(
         'auth/logout',
         '<i class="fa fa-sign-out"></i> Logout',
-        'class="btn btn-block btn-danger btn-flat"'
+        'class="btn btn-block btn-danger btn-flat logout-confirm"'
     ); ?>
 </div>
 
@@ -749,6 +749,27 @@ $(document).on('submit', '.btn-aksi-form', function(e) {
     }).then((result) => {
         if (result.isConfirmed) {
             HTMLFormElement.prototype.submit.call(form);
+        }
+    });
+});
+
+// LOGOUT - Konfirmasi sebelum keluar
+$(document).on('click', '.logout-confirm', function(e) {
+    e.preventDefault();
+    let url = $(this).attr('href');
+
+    Swal.fire({
+        title: 'Keluar?',
+        text: 'Anda akan keluar dari sistem.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
         }
     });
 });

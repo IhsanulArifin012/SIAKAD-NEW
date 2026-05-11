@@ -77,10 +77,9 @@
               <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                     
               <h4><i class="icon fa fa-warning"></i> Alert!</h4>
-              Diakhir Kode Kelas harus ditambahkan angka 1/2.<br>
-              Contoh : 7-A1 > untuk Kelas 7-A IPA &amp; 7-A2 > untuk Kelas 7-A IPS
+              Kode Kelas diisi sesuai dengan tingkatan dan paralel kelas.<br>
+              Contoh : 1A untuk Kelas 1-A, 1B untuk Kelas 1-B, dst.
           </div>
-
         </div>
         <!-- /.col -->
     </div>
