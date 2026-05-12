@@ -34,6 +34,10 @@
 		$controller = $ci->uri->segment(1);
 		$method		= $ci->uri->segment(2);
 
+		if ($controller == 'error_access') {
+			return;
+		}
+
 		if (empty($method)) {
 			$url = $controller;
 		} else {
@@ -89,7 +93,12 @@
 			$check = $ci->db->get_where('tbl_user_rule', array('id_level_user' => $level_User, 'id_menu' => $menu['id']));
 		
 			if ($check->num_rows() < 1 AND $method != 'data' AND $method != 'add' AND $method != 'edit' AND $method != 'delete' AND $method != 'detail' AND $method != 'add_detail' AND $method != 'delete_detail' AND $method != 'dataKurikulumDetail' AND $method != 'kwitansi' AND $method != 'upload_foto_siswa' AND $method != 'siswa_aktif' AND $method != 'loadDataSiswa' AND $method != 'export_excel' AND $method != 'combobox_kelas' AND $method != 'upload_foto_siswa') {
-				echo "Anda Tidak Boleh Akses Module Ini";
+				if ($ci->input->is_ajax_request()) {
+					@header('Content-Type: application/json; charset=utf-8', TRUE);
+					echo json_encode(array('error' => 'Anda tidak memiliki hak akses untuk modul ini.'));
+					die;
+				}
+				redirect('error_access');
 				die;
 			}
 		}
